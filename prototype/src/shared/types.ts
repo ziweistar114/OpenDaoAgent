@@ -2,10 +2,18 @@ export type AgentQuery = {
   text: string;
 };
 
+export type MemoryCategory = "goal" | "preference" | "constraint" | "fact" | "question";
+export type MemoryPriority = "low" | "medium" | "high";
+
 export type MemoryItem = {
   id: string;
   text: string;
+  summary: string;
   tags: string[];
+  category: MemoryCategory;
+  priority: MemoryPriority;
+  createdAt: string;
+  updatedAt: string;
   source: "seed" | "local";
 };
 

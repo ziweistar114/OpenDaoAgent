@@ -18,6 +18,11 @@ console.log(`Query: ${response.query}`);
 console.log(`Reply: ${response.reply}`);
 if (response.memoryWrite) {
   console.log(`Memory write: ${response.memoryWrite.reason}`);
+  if (response.memoryWrite.item) {
+    console.log(
+      `Memory item: [${response.memoryWrite.item.category}/${response.memoryWrite.item.priority}] ${response.memoryWrite.item.summary}`
+    );
+  }
 }
 console.log("Notes:");
 for (const note of response.notes) {

@@ -12,7 +12,12 @@
       "first",
       "deployment"
     ],
-    "source": "local"
+    "source": "local",
+    "summary": "What should Phase 1 focus on if we want persistent memory and local-first deployment?",
+    "category": "constraint",
+    "priority": "high",
+    "createdAt": "2026-04-08T23:06:52.633Z",
+    "updatedAt": "2026-04-08T23:07:01.933Z"
   },
   {
     "id": "m-local-1",
@@ -22,7 +27,12 @@
       "memory",
       "local-first"
     ],
-    "source": "local"
+    "source": "local",
+    "summary": "OpenDaoAgent should begin with a narrow Phase 1 and prove local-first memory before exp...",
+    "category": "constraint",
+    "priority": "high",
+    "createdAt": "2026-04-08T23:06:52.634Z",
+    "updatedAt": "2026-04-08T23:06:52.634Z"
   },
   {
     "id": "m-local-2",
@@ -32,6 +42,11 @@
       "prototype",
       "knowledge"
     ],
-    "source": "local"
+    "source": "local",
+    "summary": "The first real milestone is a prototype that can remember, load local knowledge, and ex...",
+    "category": "goal",
+    "priority": "medium",
+    "createdAt": "2026-04-08T23:06:52.634Z",
+    "updatedAt": "2026-04-08T23:06:52.634Z"
   }
 ]
