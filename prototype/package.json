@@ -1,0 +1,16 @@
+﻿{
+  "name": "opendaoagent-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal prototype scaffold for OpenDaoAgent.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.3"
+  }
+}

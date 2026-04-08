@@ -83,6 +83,11 @@ OpenDaoAgent/
 ├─ MANIFESTO.md
 ├─ ROADMAP.md
 ├─ CONTRIBUTING.md
+├─ prototype/
+│  ├─ README.md
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  └─ src/
 └─ docs/
    ├─ ARCHITECTURE.md
    ├─ FIRST_MVP.md
@@ -132,6 +137,10 @@ OpenDaoAgent/
 
 - [GitHub 首发招募文案](./docs/GITHUB_LAUNCH_POST.md)
 - [许可证选择建议](./docs/LICENSE_DECISION.md)
+
+最小原型骨架见：
+
+- [prototype/README.md](./prototype/README.md)
 
 ## 当前状态
 
