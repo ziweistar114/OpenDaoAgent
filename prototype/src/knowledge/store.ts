@@ -116,6 +116,16 @@ function extractTags(fileName: string, content: string): string[] {
   return Array.from(new Set([...fromName, ...fromContent])).slice(0, 12);
 }
 
+function slugifyFileName(input: string): string {
+  const normalized = input
+    .toLowerCase()
+    .replace(/\.[^.]+$/, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return normalized || `doc-${Date.now()}`;
+}
+
 async function ensureKnowledgeDir(): Promise<void> {
   await fs.mkdir(knowledgeDirPath, { recursive: true });
 
@@ -143,6 +153,36 @@ async function ensureKnowledgeDir(): Promise<void> {
     ].join("\n"),
     "utf8"
   );
+}
+
+export type IngestKnowledgeInput = {
+  title?: string;
+  content: string;
+  fileName?: string;
+};
+
+export type IngestKnowledgeResult = {
+  fileName: string;
+  filePath: string;
+  title: string;
+};
+
+export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<IngestKnowledgeResult> {
+  await ensureKnowledgeDir();
+
+  const title = (input.title || "Imported Knowledge").trim();
+  const fileName = `${slugifyFileName(input.fileName || title)}.md`;
+  const filePath = path.join(knowledgeDirPath, fileName);
+  const content = input.content.trim();
+
+  const documentBody = [`# ${title}`, "", content, ""].join("\n");
+  await fs.writeFile(filePath, documentBody, "utf8");
+
+  return {
+    fileName,
+    filePath,
+    title
+  };
 }
 
 async function readKnowledgeItems(): Promise<KnowledgeItem[]> {

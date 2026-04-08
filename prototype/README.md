@@ -81,6 +81,20 @@ prototype/
    - `src/knowledge/store.ts`
    - `src/orchestrator/run.ts`
 
+### 导入一份本地知识
+
+可以直接导入文件：
+
+```bash
+npm run ingest:file -- --file ./data/knowledge/phase1-focus.md
+```
+
+也可以直接导入一段文本：
+
+```bash
+npm run ingest:file -- --title "Temporary Note" --text "Local-first memory should stay easy to inspect."
+```
+
 ## 当前状态
 
 - 这是最小演进骨架，不代表功能已经完整
@@ -88,6 +102,7 @@ prototype/
 - 当前 memory 已支持本地 JSON 持久化读取
 - 当前 knowledge 已支持本地 markdown / text 文档读取
 - 当前 knowledge 已支持最小 chunk 切分与 chunk 级 source 引用
+- 当前 knowledge 已支持最小导入入口，可把本地文件或文本写入 `data/knowledge/`
 - 当前 memory 已支持最小写入与去重策略
 - 当前 memory 会自动补齐结构化字段：`summary / category / priority / createdAt / updatedAt`
 - 当前 orchestrator 已支持最小路由判断：`memory-first / knowledge-first / hybrid / fallback`
