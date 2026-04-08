@@ -7,7 +7,7 @@ const sampleQuery = {
   text: "What should Phase 1 focus on if we want persistent memory and local-first deployment?"
 };
 
-const response = runOrchestrator(sampleQuery);
+const response = await runOrchestrator(sampleQuery);
 
 console.log(`${config.appName} prototype`);
 console.log(`Mode: ${config.mode}`);

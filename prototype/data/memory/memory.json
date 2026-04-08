@@ -1,0 +1,14 @@
+[
+  {
+    "id": "m-local-1",
+    "text": "OpenDaoAgent should begin with a narrow Phase 1 and prove local-first memory before expanding outward.",
+    "tags": ["phase1", "memory", "local-first"],
+    "source": "local"
+  },
+  {
+    "id": "m-local-2",
+    "text": "The first real milestone is a prototype that can remember, load local knowledge, and explain its reasoning path.",
+    "tags": ["milestone", "prototype", "knowledge"],
+    "source": "local"
+  }
+]

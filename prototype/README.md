@@ -20,6 +20,9 @@
 ```text
 prototype/
  .gitignore
+ data/
+    knowledge/
+    memory/
  package.json
  tsconfig.json
  src/
@@ -53,6 +56,19 @@ prototype/
 
 这不是最终产品逻辑，但足够让后续协作者从“结构讨论”进入“代码演进”。
 
+## 当前本地数据来源
+
+当前示例链路已经不只依赖代码里的 seed：
+
+- `data/memory/memory.json`
+- `data/knowledge/*.md`
+
+其中：
+
+- memory 会优先读取本地 `memory.json`
+- knowledge 会扫描本地 markdown 或 text 文件
+- 如果本地数据缺失，代码会回退到最小 seed 内容，保证链路可跑
+
 ## 如何开始
 
 1. 进入 `prototype/`
@@ -68,5 +84,8 @@ prototype/
 
 - 这是最小演进骨架，不代表功能已经完整
 - 真正的 MVP 仍然以 `docs/FIRST_MVP.md` 为准
-- 当前检索层仍然是 seed data，不是持久化实现
-- 如果要继续写代码，优先把 seed data 替换成真正的记忆层与知识导入层
+- 当前 memory 已支持本地 JSON 持久化读取
+- 当前 knowledge 已支持本地 markdown / text 文档读取
+- 下一步最值得做的是：
+  - 把 memory 从“整文件读取”升级为更明确的记忆写入策略
+  - 把 knowledge 从“全量扫描”升级为更稳定的索引与检索机制

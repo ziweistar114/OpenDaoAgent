@@ -1,4 +1,4 @@
-﻿export type AgentQuery = {
+export type AgentQuery = {
   text: string;
 };
 
@@ -6,6 +6,7 @@ export type MemoryItem = {
   id: string;
   text: string;
   tags: string[];
+  source: "seed" | "local";
 };
 
 export type KnowledgeItem = {

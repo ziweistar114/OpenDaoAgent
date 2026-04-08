@@ -1,4 +1,4 @@
-﻿import type { AgentQuery, AgentResponse, RetrievedKnowledge, RetrievedMemory } from "../shared/types.js";
+import type { AgentQuery, AgentResponse, RetrievedKnowledge, RetrievedMemory } from "../shared/types.js";
 import { retrieveMemory } from "../memory/store.js";
 import { retrieveKnowledge } from "../knowledge/store.js";
 import { logStep } from "../shared/logger.js";
@@ -28,13 +28,13 @@ function buildReply(
   return parts.join(" ");
 }
 
-export function runOrchestrator(query: AgentQuery): AgentResponse {
+export async function runOrchestrator(query: AgentQuery): Promise<AgentResponse> {
   logStep("orchestrator", `received query: ${query.text}`);
 
-  const memoryHits = retrieveMemory(query);
+  const memoryHits = await retrieveMemory(query);
   logStep("memory", `hits: ${memoryHits.length}`);
 
-  const knowledgeHits = retrieveKnowledge(query);
+  const knowledgeHits = await retrieveKnowledge(query);
   logStep("knowledge", `hits: ${knowledgeHits.length}`);
 
   return {
@@ -44,8 +44,8 @@ export function runOrchestrator(query: AgentQuery): AgentResponse {
     reply: buildReply(query, memoryHits, knowledgeHits),
     notes: [
       "This is a minimal prototype chain.",
-      "The current retrieval layer uses seed data instead of external storage.",
-      "The next step is to replace the seed layer with persistent memory and document ingestion."
+      "Memory now reads from a local JSON file if available.",
+      "Knowledge now reads from local markdown or text files in prototype/data/knowledge."
     ]
   };
 }
