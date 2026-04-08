@@ -1,7 +1,7 @@
 [
   {
     "id": "m-local-1775689351778",
-    "text": "What should Phase 1 focus on if we want persistent memory and local-first deployment?",
+    "text": "Phase 1 should remain local-first, narrow in scope, and memory-driven for the first milestone.",
     "tags": [
       "should",
       "phase",
@@ -13,19 +13,22 @@
       "deployment",
       "driven",
       "narrow",
-      "scope"
+      "scope",
+      "small"
     ],
     "source": "local",
-    "summary": "What should Phase 1 focus on if we want persistent memory and local-first deployment?",
+    "summary": "Phase 1 should remain local-first, narrow in scope, and memory-driven for the first mil... (+3 related phrasings)",
     "category": "constraint",
     "priority": "high",
     "createdAt": "2026-04-08T23:06:52.633Z",
-    "updatedAt": "2026-04-08T23:10:57.995Z",
-    "state": "active",
-    "accessCount": 1,
-    "mergeCount": 1,
+    "updatedAt": "2026-04-08T23:14:10.379Z",
+    "state": "merged",
+    "accessCount": 2,
+    "mergeCount": 4,
     "aliases": [
-      "Phase 1 should stay local-first, memory-driven, and narrow in scope."
+      "Phase 1 should stay local-first, memory-driven, and narrow in scope.",
+      "Phase 1 should remain local-first, narrow in scope, and memory-driven.",
+      "Phase 1 should stay small and local-first, with persistent memory as a core rule."
     ]
   },
   {

@@ -62,6 +62,12 @@ function buildSummary(text: string): string {
   return normalized.length <= 90 ? normalized : `${normalized.slice(0, 87)}...`;
 }
 
+function buildCompressedSummary(text: string, aliases: string[]): string {
+  const base = buildSummary(text);
+  if (!aliases.length) return base;
+  return `${base} (+${aliases.length} related phrasing${aliases.length > 1 ? "s" : ""})`;
+}
+
 function buildTagsFromQuery(text: string): string[] {
   return Array.from(
     new Set(
@@ -120,6 +126,16 @@ function similarityScore(a: string[], b: string[]): number {
   return union === 0 ? 0 : intersection / union;
 }
 
+function compactAliases(text: string, aliases: string[]): string[] {
+  const unique = Array.from(new Set(aliases.map((item) => item.trim()).filter(Boolean))).filter(
+    (item) => normalizeText(item) !== normalizeText(text)
+  );
+
+  return unique
+    .sort((a, b) => a.length - b.length)
+    .slice(0, 3);
+}
+
 function toStructuredMemory(
   item: Omit<
     MemoryItem,
@@ -142,7 +158,7 @@ function toStructuredMemory(
     state: item.state ?? "active",
     accessCount: item.accessCount ?? 0,
     mergeCount: item.mergeCount ?? 0,
-    aliases: item.aliases ?? [],
+    aliases: compactAliases(item.text, item.aliases ?? []),
     createdAt: item.createdAt ?? now,
     updatedAt: item.updatedAt ?? item.createdAt ?? now
   };
@@ -197,17 +213,17 @@ function sortForRetention(items: MemoryItem[]): MemoryItem[] {
 
 function mergeMemory(existing: MemoryItem, incomingText: string, incomingTags: string[]): MemoryItem {
   const updatedText = incomingText.length > existing.text.length ? incomingText : existing.text;
-  const aliases = Array.from(new Set([...existing.aliases, existing.text, incomingText])).filter(
-    (item) => normalizeText(item) !== normalizeText(updatedText)
-  );
+  const aliases = compactAliases(updatedText, [...existing.aliases, existing.text, incomingText]);
+  const mergeCount = existing.mergeCount + 1;
 
   return {
     ...existing,
     text: updatedText,
-    summary: buildSummary(updatedText),
+    summary: buildCompressedSummary(updatedText, aliases),
     tags: Array.from(new Set([...existing.tags, ...incomingTags])).slice(0, 12),
-    aliases: aliases.slice(0, 10),
-    mergeCount: existing.mergeCount + 1,
+    aliases,
+    state: mergeCount > 0 ? "merged" : "active",
+    mergeCount,
     updatedAt: new Date().toISOString()
   };
 }
@@ -226,6 +242,7 @@ export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResul
     const refreshed: MemoryItem = {
       ...duplicate,
       accessCount: duplicate.accessCount + 1,
+      summary: buildCompressedSummary(duplicate.text, duplicate.aliases),
       updatedAt: new Date().toISOString()
     };
     await writeMemoryItems(sortForRetention([refreshed, ...items.filter((item) => item.id !== duplicate.id)]).slice(0, 50));
