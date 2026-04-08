@@ -66,7 +66,7 @@ prototype/
 其中：
 
 - memory 会优先读取本地 `memory.json`
-- knowledge 会扫描本地 markdown 或 text 文件，并切成最小 chunk 检索
+- knowledge 会扫描本地 markdown 或 text 文件，切成最小 chunk，并把结果缓存到本地索引
 - orchestrator 会尝试把有意义的新 query 写回本地 memory
 - 如果本地数据缺失，代码会回退到最小 seed 内容，保证链路可跑
 
@@ -102,10 +102,12 @@ npm run ingest:file -- --title "Temporary Note" --text "Local-first memory shoul
 - 当前 memory 已支持本地 JSON 持久化读取
 - 当前 knowledge 已支持本地 markdown / text 文档读取
 - 当前 knowledge 已支持最小 chunk 切分与 chunk 级 source 引用
+- 当前 knowledge 已支持最小索引缓存：文件未变化时直接复用 `data/knowledge/.index-cache.json`
 - 当前 knowledge 已支持最小导入入口，可把本地文件或文本写入 `data/knowledge/`
 - 当前 memory 已支持最小写入与去重策略
 - 当前 memory 会自动补齐结构化字段：`summary / category / priority / createdAt / updatedAt`
 - 当前 orchestrator 已支持最小路由判断：`memory-first / knowledge-first / hybrid / fallback`
+- 当前 orchestrator 已输出统一响应格式：`version / query / answer / route / memory / knowledge / system`
 - 当前 memory 已支持最小治理规则：
   - 重复内容只更新时间与访问次数
   - 相似内容会合并进旧记忆
@@ -114,4 +116,5 @@ npm run ingest:file -- --title "Temporary Note" --text "Local-first memory shoul
   - summary 会随着合并结果自动压缩更新
 - 下一步最值得做的是：
   - 把 memory 从“最小治理规则”升级为更细的冲突处理与记忆分类提取
-  - 把 knowledge 从“全量扫描”升级为更稳定的索引与检索机制
+  - 把 knowledge 从“最小索引缓存”升级为更稳定的增量索引与排序机制
+  - 把统一响应格式继续升级为可直接对接 API 或前端的 schema

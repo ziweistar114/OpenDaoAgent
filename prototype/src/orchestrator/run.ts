@@ -2,7 +2,6 @@ import type {
   AgentQuery,
   AgentResponse,
   AgentRouteDecision,
-  RetrievedKnowledge,
   RetrievedMemory
 } from "../shared/types.js";
 import { rememberQuery, retrieveMemory } from "../memory/store.js";
@@ -53,31 +52,52 @@ function decideRoute(query: AgentQuery): AgentRouteDecision {
 }
 
 function buildReply(
-  query: AgentQuery,
   route: AgentRouteDecision,
   memoryHits: RetrievedMemory[],
-  knowledgeHits: RetrievedKnowledge[]
-): string {
-  const parts: string[] = [];
-
-  parts.push(`Route: ${route.mode}.`);
+  knowledgeHits: AgentResponse["knowledge"]["hits"]
+): AgentResponse["answer"] {
+  const evidence: string[] = [];
+  const nextActions: string[] = [];
 
   if (memoryHits.length) {
-    parts.push(`Memory suggests: ${memoryHits[0].item.text}`);
+    evidence.push(`Memory: ${memoryHits[0].item.summary}`);
   }
 
   if (knowledgeHits.length) {
-    parts.push(
-      `Knowledge suggests: ${knowledgeHits[0].item.summary} (source: ${knowledgeHits[0].item.source})`
-    );
+    evidence.push(`Knowledge: ${knowledgeHits[0].item.summary} (${knowledgeHits[0].item.source})`);
   }
 
-  if (!parts.length) {
-    parts.push("No strong memory or knowledge match was found yet. The next step is to expand seed data.");
+  if (!knowledgeHits.length) {
+    nextActions.push("Add or refresh local documents in prototype/data/knowledge for stronger source-backed guidance.");
   }
 
-  parts.push(`Current request: ${query.text}`);
-  return parts.join(" ");
+  if (!memoryHits.length) {
+    nextActions.push("Ask a more preference-rich or continuity-focused question to strengthen local memory retrieval.");
+  }
+
+  if (!nextActions.length) {
+    nextActions.push("Keep expanding the local-first chain while preserving inspectable memory and source-backed knowledge.");
+  }
+
+  const summaryParts = [`Route selected: ${route.mode}.`];
+
+  if (memoryHits.length) {
+    summaryParts.push(`Memory emphasizes ${memoryHits[0].item.summary}`);
+  }
+
+  if (knowledgeHits.length) {
+    summaryParts.push(`Knowledge emphasizes ${knowledgeHits[0].item.summary}`);
+  }
+
+  if (summaryParts.length === 1) {
+    summaryParts.push("No strong memory or knowledge match was found yet.");
+  }
+
+  return {
+    summary: summaryParts.join(" "),
+    evidence,
+    nextActions
+  };
 }
 
 export async function runOrchestrator(query: AgentQuery): Promise<AgentResponse> {
@@ -92,23 +112,39 @@ export async function runOrchestrator(query: AgentQuery): Promise<AgentResponse>
   const memoryHits = route.shouldReadMemory ? await retrieveMemory(query) : [];
   logStep("memory", `hits: ${memoryHits.length}`);
 
-  const knowledgeHits = route.shouldReadKnowledge ? await retrieveKnowledge(query) : [];
-  logStep("knowledge", `hits: ${knowledgeHits.length}`);
+  const knowledge = route.shouldReadKnowledge
+    ? await retrieveKnowledge(query)
+    : {
+        hits: [],
+        index: {
+          cacheFile: "data/knowledge/.index-cache.json",
+          cacheState: "skipped" as const,
+          documentCount: 0,
+          chunkCount: 0
+        }
+      };
+  logStep("knowledge", `hits: ${knowledge.hits.length} | cache: ${knowledge.index.cacheState}`);
 
   return {
-    query: query.text,
+    version: "v1",
+    query,
+    answer: buildReply(route, memoryHits, knowledge.hits),
     route,
-    memoryHits,
-    knowledgeHits,
-    reply: buildReply(query, route, memoryHits, knowledgeHits),
-    memoryWrite,
-    notes: [
+    memory: {
+      hits: memoryHits,
+      write: memoryWrite
+    },
+    knowledge,
+    system: {
+      generatedAt: new Date().toISOString(),
+      notes: [
       "This is a minimal prototype chain.",
       `Route mode: ${route.mode}.`,
       `Route reason: ${route.reason}.`,
       "Memory now reads from a local JSON file if available.",
-      "Knowledge now reads from local markdown or text files in prototype/data/knowledge.",
+      `Knowledge now reads from local markdown or text files in prototype/data/knowledge using a ${knowledge.index.cacheState} index.`,
       `Memory write status: ${memoryWrite.reason}.`
-    ]
+      ]
+    }
   };
 }

@@ -1,7 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { knowledgeDirPath } from "../core/paths.js";
-import type { AgentQuery, KnowledgeItem, RetrievedKnowledge } from "../shared/types.js";
+import { knowledgeDirPath, prototypeRoot } from "../core/paths.js";
+import type {
+  AgentQuery,
+  KnowledgeIndexStatus,
+  KnowledgeItem,
+  KnowledgeRetrievalResult,
+  RetrievedKnowledge
+} from "../shared/types.js";
 
 const knowledgeSeed: KnowledgeItem[] = [
   {
@@ -21,6 +27,22 @@ const knowledgeSeed: KnowledgeItem[] = [
     chunkIndex: 1
   }
 ];
+
+const knowledgeIndexCachePath = path.join(knowledgeDirPath, ".index-cache.json");
+
+type KnowledgeCacheDocument = {
+  fileName: string;
+  sourcePath: string;
+  mtimeMs: number;
+  size: number;
+};
+
+type KnowledgeIndexCache = {
+  version: 1;
+  builtAt: string;
+  documents: KnowledgeCacheDocument[];
+  items: KnowledgeItem[];
+};
 
 function scoreText(query: string, candidate: string, tags: string[]): number {
   const tokens = query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
@@ -126,6 +148,42 @@ function slugifyFileName(input: string): string {
   return normalized || `doc-${Date.now()}`;
 }
 
+function toProjectRelativePath(filePath: string): string {
+  return path.relative(prototypeRoot, filePath).replace(/\\/g, "/");
+}
+
+function buildIndexStatus(
+  cacheState: KnowledgeIndexStatus["cacheState"],
+  documentCount: number,
+  chunkCount: number,
+  lastBuiltAt?: string
+): KnowledgeIndexStatus {
+  return {
+    cacheFile: toProjectRelativePath(knowledgeIndexCachePath),
+    cacheState,
+    documentCount,
+    chunkCount,
+    lastBuiltAt
+  };
+}
+
+function documentsMatch(current: KnowledgeCacheDocument[], cached: KnowledgeCacheDocument[]): boolean {
+  if (current.length !== cached.length) {
+    return false;
+  }
+
+  return current.every((item, index) => {
+    const target = cached[index];
+    return (
+      target &&
+      item.fileName === target.fileName &&
+      item.sourcePath === target.sourcePath &&
+      item.mtimeMs === target.mtimeMs &&
+      item.size === target.size
+    );
+  });
+}
+
 async function ensureKnowledgeDir(): Promise<void> {
   await fs.mkdir(knowledgeDirPath, { recursive: true });
 
@@ -153,6 +211,56 @@ async function ensureKnowledgeDir(): Promise<void> {
     ].join("\n"),
     "utf8"
   );
+}
+
+async function listKnowledgeDocuments(): Promise<KnowledgeCacheDocument[]> {
+  const entries = await fs.readdir(knowledgeDirPath, { withFileTypes: true });
+  const files = entries.filter((entry) => entry.isFile() && /\.(md|txt)$/i.test(entry.name));
+
+  const documents = await Promise.all(
+    files.map(async (entry) => {
+      const filePath = path.join(knowledgeDirPath, entry.name);
+      const stats = await fs.stat(filePath);
+
+      return {
+        fileName: entry.name,
+        sourcePath: toProjectRelativePath(filePath),
+        mtimeMs: stats.mtimeMs,
+        size: stats.size
+      } satisfies KnowledgeCacheDocument;
+    })
+  );
+
+  return documents.sort((a, b) => a.fileName.localeCompare(b.fileName));
+}
+
+async function readKnowledgeCache(): Promise<KnowledgeIndexCache | null> {
+  try {
+    const raw = await fs.readFile(knowledgeIndexCachePath, "utf8");
+    const parsed = JSON.parse(raw) as Partial<KnowledgeIndexCache>;
+
+    if (
+      parsed.version !== 1 ||
+      !Array.isArray(parsed.documents) ||
+      !Array.isArray(parsed.items) ||
+      typeof parsed.builtAt !== "string"
+    ) {
+      return null;
+    }
+
+    return {
+      version: 1,
+      builtAt: parsed.builtAt,
+      documents: parsed.documents as KnowledgeCacheDocument[],
+      items: parsed.items as KnowledgeItem[]
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function writeKnowledgeCache(cache: KnowledgeIndexCache): Promise<void> {
+  await fs.writeFile(knowledgeIndexCachePath, `${JSON.stringify(cache, null, 2)}\n`, "utf8");
 }
 
 export type IngestKnowledgeInput = {
@@ -187,42 +295,92 @@ export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<
 
 async function readKnowledgeItems(): Promise<KnowledgeItem[]> {
   await ensureKnowledgeDir();
-  const entries = await fs.readdir(knowledgeDirPath, { withFileTypes: true });
+  const documents = await listKnowledgeDocuments();
+  const cachedIndex = await readKnowledgeCache();
+
+  if (cachedIndex && documentsMatch(documents, cachedIndex.documents) && cachedIndex.items.length > 0) {
+    return cachedIndex.items;
+  }
 
   const docs = (
     await Promise.all(
-      entries
-        .filter((entry) => entry.isFile() && /\.(md|txt)$/i.test(entry.name))
-        .map(async (entry, index) => {
-          const filePath = path.join(knowledgeDirPath, entry.name);
-          const content = await fs.readFile(filePath, "utf8");
-          const title = extractTitle(content, entry.name);
-          const sourcePath = path
-            .relative(path.resolve(knowledgeDirPath, "..", ".."), filePath)
-            .replace(/\\/g, "/");
-          const chunks = splitIntoChunks(content);
+      documents.map(async (document) => {
+        const filePath = path.join(knowledgeDirPath, document.fileName);
+        const content = await fs.readFile(filePath, "utf8");
+        const title = extractTitle(content, document.fileName);
+        const chunks = splitIntoChunks(content);
+        const baseId = slugifyFileName(document.fileName);
 
-          return chunks.map((chunk, chunkIndex) => ({
-            id: `local-k-${index + 1}-c${chunkIndex + 1}`,
-            title,
-            summary: chunk,
-            tags: extractTags(entry.name, `${title} ${chunk}`),
-            source: `${sourcePath}#chunk-${chunkIndex + 1}`,
-            chunkIndex: chunkIndex + 1
-          }) satisfies KnowledgeItem);
-        })
+        return chunks.map((chunk, chunkIndex) => ({
+          id: `local-k-${baseId}-c${chunkIndex + 1}`,
+          title,
+          summary: chunk,
+          tags: extractTags(document.fileName, `${title} ${chunk}`),
+          source: `${document.sourcePath}#chunk-${chunkIndex + 1}`,
+          chunkIndex: chunkIndex + 1
+        }) satisfies KnowledgeItem);
+      })
     )
   ).flat();
 
-  return docs.length ? docs : knowledgeSeed;
+  if (!docs.length) {
+    return knowledgeSeed;
+  }
+
+  await writeKnowledgeCache({
+    version: 1,
+    builtAt: new Date().toISOString(),
+    documents,
+    items: docs
+  });
+
+  return docs;
 }
 
-export async function retrieveKnowledge(query: AgentQuery): Promise<RetrievedKnowledge[]> {
-  const knowledgeItems = await readKnowledgeItems();
+async function loadKnowledgeIndex(): Promise<{ items: KnowledgeItem[]; index: KnowledgeIndexStatus }> {
+  await ensureKnowledgeDir();
+  const documents = await listKnowledgeDocuments();
 
-  return knowledgeItems
+  if (!documents.length) {
+    return {
+      items: knowledgeSeed,
+      index: buildIndexStatus("seed", 0, knowledgeSeed.length)
+    };
+  }
+
+  const cachedIndex = await readKnowledgeCache();
+  if (cachedIndex && documentsMatch(documents, cachedIndex.documents) && cachedIndex.items.length > 0) {
+    return {
+      items: cachedIndex.items,
+      index: buildIndexStatus("reused", documents.length, cachedIndex.items.length, cachedIndex.builtAt)
+    };
+  }
+
+  const items = await readKnowledgeItems();
+  const rebuiltCache = await readKnowledgeCache();
+
+  return {
+    items,
+    index: buildIndexStatus(
+      rebuiltCache ? "rebuilt" : "seed",
+      documents.length,
+      items.length,
+      rebuiltCache?.builtAt
+    )
+  };
+}
+
+export async function retrieveKnowledge(query: AgentQuery): Promise<KnowledgeRetrievalResult> {
+  const { items, index } = await loadKnowledgeIndex();
+
+  const hits: RetrievedKnowledge[] = items
     .map((item) => ({ item, score: scoreText(query.text, `${item.title} ${item.summary}`, item.tags) }))
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
+
+  return {
+    hits,
+    index
+  };
 }

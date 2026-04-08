@@ -31,6 +31,16 @@ export type KnowledgeItem = {
   chunkIndex: number;
 };
 
+export type KnowledgeIndexCacheState = "reused" | "rebuilt" | "seed" | "skipped";
+
+export type KnowledgeIndexStatus = {
+  cacheFile: string;
+  cacheState: KnowledgeIndexCacheState;
+  documentCount: number;
+  chunkCount: number;
+  lastBuiltAt?: string;
+};
+
 export type RetrievedMemory = {
   item: MemoryItem;
   score: number;
@@ -39,6 +49,11 @@ export type RetrievedMemory = {
 export type RetrievedKnowledge = {
   item: KnowledgeItem;
   score: number;
+};
+
+export type KnowledgeRetrievalResult = {
+  hits: RetrievedKnowledge[];
+  index: KnowledgeIndexStatus;
 };
 
 export type AgentRouteMode = "memory-first" | "knowledge-first" | "hybrid" | "fallback";
@@ -57,11 +72,21 @@ export type MemoryWriteResult = {
 };
 
 export type AgentResponse = {
-  query: string;
-  memoryHits: RetrievedMemory[];
-  knowledgeHits: RetrievedKnowledge[];
-  reply: string;
-  notes: string[];
+  version: "v1";
+  query: AgentQuery;
+  answer: {
+    summary: string;
+    evidence: string[];
+    nextActions: string[];
+  };
   route: AgentRouteDecision;
-  memoryWrite?: MemoryWriteResult;
+  memory: {
+    hits: RetrievedMemory[];
+    write?: MemoryWriteResult;
+  };
+  knowledge: KnowledgeRetrievalResult;
+  system: {
+    generatedAt: string;
+    notes: string[];
+  };
 };

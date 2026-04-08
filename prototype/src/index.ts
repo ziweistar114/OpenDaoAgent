@@ -14,18 +14,35 @@ console.log(`Mode: ${config.mode}`);
 console.log(`Phase: ${config.currentPhase}`);
 console.log(`Allowed tools: ${listAllowedTools().join(", ")}`);
 console.log("---");
-console.log(`Query: ${response.query}`);
+console.log(`Response version: ${response.version}`);
+console.log(`Generated at: ${response.system.generatedAt}`);
+console.log(`Query: ${response.query.text}`);
 console.log(`Route: ${response.route.mode} | ${response.route.reason}`);
-console.log(`Reply: ${response.reply}`);
-if (response.memoryWrite) {
-  console.log(`Memory write: ${response.memoryWrite.reason}`);
-  if (response.memoryWrite.item) {
+console.log(`Summary: ${response.answer.summary}`);
+if (response.answer.evidence.length) {
+  console.log("Evidence:");
+  for (const item of response.answer.evidence) {
+    console.log(`- ${item}`);
+  }
+}
+if (response.answer.nextActions.length) {
+  console.log("Next actions:");
+  for (const item of response.answer.nextActions) {
+    console.log(`- ${item}`);
+  }
+}
+if (response.memory.write) {
+  console.log(`Memory write: ${response.memory.write.reason}`);
+  if (response.memory.write.item) {
     console.log(
-      `Memory item: [${response.memoryWrite.item.category}/${response.memoryWrite.item.priority}] ${response.memoryWrite.item.summary}`
+      `Memory item: [${response.memory.write.item.category}/${response.memory.write.item.priority}] ${response.memory.write.item.summary}`
     );
   }
 }
-console.log("Notes:");
-for (const note of response.notes) {
+console.log(
+  `Knowledge index: ${response.knowledge.index.cacheState} | docs=${response.knowledge.index.documentCount} | chunks=${response.knowledge.index.chunkCount}`
+);
+console.log("System notes:");
+for (const note of response.system.notes) {
   console.log(`- ${note}`);
 }
