@@ -15,6 +15,7 @@ console.log(`Phase: ${config.currentPhase}`);
 console.log(`Allowed tools: ${listAllowedTools().join(", ")}`);
 console.log("---");
 console.log(`Query: ${response.query}`);
+console.log(`Route: ${response.route.mode} | ${response.route.reason}`);
 console.log(`Reply: ${response.reply}`);
 if (response.memoryWrite) {
   console.log(`Memory write: ${response.memoryWrite.reason}`);

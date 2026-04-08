@@ -51,7 +51,7 @@ prototype/
 1. 读取基础配置
 2. 从内置 `memory seed` 检索记忆
 3. 从内置 `knowledge seed` 检索知识
-4. 交给 `orchestrator` 汇总结果
+4. 由 `orchestrator` 先判断该走 memory、knowledge 还是 hybrid
 5. 在控制台输出一条最小响应
 
 这不是最终产品逻辑，但足够让后续协作者从“结构讨论”进入“代码演进”。
@@ -90,6 +90,7 @@ prototype/
 - 当前 knowledge 已支持最小 chunk 切分与 chunk 级 source 引用
 - 当前 memory 已支持最小写入与去重策略
 - 当前 memory 会自动补齐结构化字段：`summary / category / priority / createdAt / updatedAt`
+- 当前 orchestrator 已支持最小路由判断：`memory-first / knowledge-first / hybrid / fallback`
 - 当前 memory 已支持最小治理规则：
   - 重复内容只更新时间与访问次数
   - 相似内容会合并进旧记忆

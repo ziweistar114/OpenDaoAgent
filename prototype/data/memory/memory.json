@@ -1,5 +1,28 @@
 [
   {
+    "id": "m-local-1775690676280",
+    "text": "How should chunk retrieval work before a vector database is added?",
+    "tags": [
+      "should",
+      "chunk",
+      "retrieval",
+      "before",
+      "vector",
+      "database",
+      "added"
+    ],
+    "source": "local",
+    "summary": "How should chunk retrieval work before a vector database is added?",
+    "category": "constraint",
+    "priority": "high",
+    "state": "active",
+    "accessCount": 1,
+    "mergeCount": 0,
+    "aliases": [],
+    "createdAt": "2026-04-08T23:24:36.280Z",
+    "updatedAt": "2026-04-08T23:25:23.223Z"
+  },
+  {
     "id": "m-local-1775689351778",
     "text": "Phase 1 should remain local-first, narrow in scope, and memory-driven for the first milestone.",
     "tags": [
@@ -21,10 +44,10 @@
     "category": "constraint",
     "priority": "high",
     "createdAt": "2026-04-08T23:06:52.633Z",
-    "updatedAt": "2026-04-08T23:20:33.240Z",
+    "updatedAt": "2026-04-08T23:24:25.347Z",
     "state": "merged",
     "accessCount": 2,
-    "mergeCount": 6,
+    "mergeCount": 7,
     "aliases": [
       "Phase 1 should stay local-first, memory-driven, and narrow in scope.",
       "Phase 1 should remain local-first, narrow in scope, and memory-driven.",
@@ -68,5 +91,27 @@
     "accessCount": 0,
     "mergeCount": 0,
     "aliases": []
+  },
+  {
+    "id": "m-local-1775690676273",
+    "text": "Remember my previous preference for local-first deployment.",
+    "tags": [
+      "remember",
+      "previous",
+      "preference",
+      "local",
+      "first",
+      "deployment"
+    ],
+    "source": "local",
+    "summary": "Remember my previous preference for local-first deployment.",
+    "category": "preference",
+    "priority": "low",
+    "state": "active",
+    "accessCount": 1,
+    "mergeCount": 0,
+    "aliases": [],
+    "createdAt": "2026-04-08T23:24:36.273Z",
+    "updatedAt": "2026-04-08T23:25:23.216Z"
   }
 ]

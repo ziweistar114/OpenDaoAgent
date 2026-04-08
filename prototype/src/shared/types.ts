@@ -41,6 +41,15 @@ export type RetrievedKnowledge = {
   score: number;
 };
 
+export type AgentRouteMode = "memory-first" | "knowledge-first" | "hybrid" | "fallback";
+
+export type AgentRouteDecision = {
+  mode: AgentRouteMode;
+  reason: string;
+  shouldReadMemory: boolean;
+  shouldReadKnowledge: boolean;
+};
+
 export type MemoryWriteResult = {
   saved: boolean;
   reason: string;
@@ -53,5 +62,6 @@ export type AgentResponse = {
   knowledgeHits: RetrievedKnowledge[];
   reply: string;
   notes: string[];
+  route: AgentRouteDecision;
   memoryWrite?: MemoryWriteResult;
 };
