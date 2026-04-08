@@ -9,14 +9,16 @@ const knowledgeSeed: KnowledgeItem[] = [
     title: "Phase 1 MVP",
     summary: "Phase 1 focuses on local deployment, persistent memory, authorized knowledge ingestion, basic orchestration, and safe tool boundaries.",
     tags: ["phase1", "mvp", "memory", "knowledge", "tools"],
-    source: "docs/FIRST_MVP.md"
+    source: "docs/FIRST_MVP.md#chunk-1",
+    chunkIndex: 1
   },
   {
     id: "k-2",
     title: "Architecture",
     summary: "The first architecture layers are interaction, orchestration, memory, knowledge, tools, and audit-oriented deployment.",
     tags: ["architecture", "orchestrator", "knowledge", "memory", "tools"],
-    source: "docs/ARCHITECTURE.md"
+    source: "docs/ARCHITECTURE.md#chunk-1",
+    chunkIndex: 1
   }
 ];
 
@@ -51,6 +53,51 @@ function extractSummary(content: string): string {
     .trim();
 
   return normalized.slice(0, 220);
+}
+
+function cleanChunkText(content: string): string {
+  return content
+    .replace(/^#+\s*/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function splitIntoChunks(content: string): string[] {
+  const paragraphs = content
+    .split(/\r?\n\r?\n/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => cleanChunkText(part));
+
+  const chunks: string[] = [];
+  let buffer = "";
+
+  for (const paragraph of paragraphs) {
+    const candidate = buffer ? `${buffer} ${paragraph}` : paragraph;
+    if (candidate.length <= 220) {
+      buffer = candidate;
+      continue;
+    }
+
+    if (buffer) {
+      chunks.push(buffer);
+    }
+
+    if (paragraph.length <= 220) {
+      buffer = paragraph;
+    } else {
+      for (let index = 0; index < paragraph.length; index += 180) {
+        chunks.push(paragraph.slice(index, index + 180).trim());
+      }
+      buffer = "";
+    }
+  }
+
+  if (buffer) {
+    chunks.push(buffer);
+  }
+
+  return chunks.length ? chunks : [extractSummary(content)];
 }
 
 function extractTags(fileName: string, content: string): string[] {
@@ -102,22 +149,30 @@ async function readKnowledgeItems(): Promise<KnowledgeItem[]> {
   await ensureKnowledgeDir();
   const entries = await fs.readdir(knowledgeDirPath, { withFileTypes: true });
 
-  const docs = await Promise.all(
-    entries
-      .filter((entry) => entry.isFile() && /\.(md|txt)$/i.test(entry.name))
-      .map(async (entry, index) => {
-        const filePath = path.join(knowledgeDirPath, entry.name);
-        const content = await fs.readFile(filePath, "utf8");
+  const docs = (
+    await Promise.all(
+      entries
+        .filter((entry) => entry.isFile() && /\.(md|txt)$/i.test(entry.name))
+        .map(async (entry, index) => {
+          const filePath = path.join(knowledgeDirPath, entry.name);
+          const content = await fs.readFile(filePath, "utf8");
+          const title = extractTitle(content, entry.name);
+          const sourcePath = path
+            .relative(path.resolve(knowledgeDirPath, "..", ".."), filePath)
+            .replace(/\\/g, "/");
+          const chunks = splitIntoChunks(content);
 
-        return {
-          id: `local-k-${index + 1}`,
-          title: extractTitle(content, entry.name),
-          summary: extractSummary(content),
-          tags: extractTags(entry.name, content),
-          source: path.relative(path.resolve(knowledgeDirPath, "..", ".."), filePath).replace(/\\/g, "/")
-        } satisfies KnowledgeItem;
-      })
-  );
+          return chunks.map((chunk, chunkIndex) => ({
+            id: `local-k-${index + 1}-c${chunkIndex + 1}`,
+            title,
+            summary: chunk,
+            tags: extractTags(entry.name, `${title} ${chunk}`),
+            source: `${sourcePath}#chunk-${chunkIndex + 1}`,
+            chunkIndex: chunkIndex + 1
+          }) satisfies KnowledgeItem);
+        })
+    )
+  ).flat();
 
   return docs.length ? docs : knowledgeSeed;
 }

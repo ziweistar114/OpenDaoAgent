@@ -28,6 +28,7 @@ export type KnowledgeItem = {
   summary: string;
   tags: string[];
   source: string;
+  chunkIndex: number;
 };
 
 export type RetrievedMemory = {

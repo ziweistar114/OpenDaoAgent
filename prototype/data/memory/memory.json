@@ -21,10 +21,10 @@
     "category": "constraint",
     "priority": "high",
     "createdAt": "2026-04-08T23:06:52.633Z",
-    "updatedAt": "2026-04-08T23:14:10.379Z",
+    "updatedAt": "2026-04-08T23:20:33.240Z",
     "state": "merged",
     "accessCount": 2,
-    "mergeCount": 4,
+    "mergeCount": 6,
     "aliases": [
       "Phase 1 should stay local-first, memory-driven, and narrow in scope.",
       "Phase 1 should remain local-first, narrow in scope, and memory-driven.",
