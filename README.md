@@ -80,9 +80,13 @@
 ```text
 OpenDaoAgent/
 ├─ README.md
+├─ README_EN.md
 ├─ MANIFESTO.md
 ├─ ROADMAP.md
 ├─ CONTRIBUTING.md
+├─ .github/
+│  ├─ ISSUE_TEMPLATE/
+│  └─ PULL_REQUEST_TEMPLATE.md
 ├─ prototype/
 │  ├─ README.md
 │  ├─ package.json
@@ -90,6 +94,8 @@ OpenDaoAgent/
 │  └─ src/
 └─ docs/
    ├─ ARCHITECTURE.md
+   ├─ COMMUNITY_GUIDE.md
+   ├─ FIRST_ISSUES.md
    ├─ FIRST_MVP.md
    ├─ GITHUB_LAUNCH_POST.md
    └─ LICENSE_DECISION.md
@@ -137,6 +143,8 @@ OpenDaoAgent/
 
 - [GitHub 首发招募文案](./docs/GITHUB_LAUNCH_POST.md)
 - [许可证选择建议](./docs/LICENSE_DECISION.md)
+- [社区协作说明](./docs/COMMUNITY_GUIDE.md)
+- [首批 issue 建议](./docs/FIRST_ISSUES.md)
 
 最小原型骨架见：
 
