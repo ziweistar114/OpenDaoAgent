@@ -18,6 +18,10 @@ const memorySeed: MemoryItem[] = [
     tags: ["phase1", "local-first", "scope"],
     category: "constraint",
     priority: "high",
+    state: "active",
+    accessCount: 0,
+    mergeCount: 0,
+    aliases: [],
     createdAt: "2026-04-09T00:00:00.000Z",
     updatedAt: "2026-04-09T00:00:00.000Z",
     source: "seed"
@@ -29,6 +33,10 @@ const memorySeed: MemoryItem[] = [
     tags: ["memory", "continuity", "audit"],
     category: "fact",
     priority: "high",
+    state: "active",
+    accessCount: 0,
+    mergeCount: 0,
+    aliases: [],
     createdAt: "2026-04-09T00:00:00.000Z",
     updatedAt: "2026-04-09T00:00:00.000Z",
     source: "seed"
@@ -98,9 +106,31 @@ function inferPriority(text: string, category: MemoryCategory): MemoryPriority {
   return "low";
 }
 
+function priorityWeight(priority: MemoryPriority): number {
+  if (priority === "high") return 3;
+  if (priority === "medium") return 2;
+  return 1;
+}
+
+function similarityScore(a: string[], b: string[]): number {
+  const setA = new Set(a);
+  const setB = new Set(b);
+  const intersection = [...setA].filter((item) => setB.has(item)).length;
+  const union = new Set([...setA, ...setB]).size;
+  return union === 0 ? 0 : intersection / union;
+}
+
 function toStructuredMemory(
-  item: Omit<MemoryItem, "summary" | "category" | "priority" | "createdAt" | "updatedAt"> &
-    Partial<Pick<MemoryItem, "summary" | "category" | "priority" | "createdAt" | "updatedAt">>
+  item: Omit<
+    MemoryItem,
+    "summary" | "category" | "priority" | "state" | "accessCount" | "mergeCount" | "aliases" | "createdAt" | "updatedAt"
+  > &
+    Partial<
+      Pick<
+        MemoryItem,
+        "summary" | "category" | "priority" | "state" | "accessCount" | "mergeCount" | "aliases" | "createdAt" | "updatedAt"
+      >
+    >
 ): MemoryItem {
   const now = new Date().toISOString();
   const category = item.category ?? inferCategory(item.text);
@@ -109,6 +139,10 @@ function toStructuredMemory(
     summary: item.summary ?? buildSummary(item.text),
     category,
     priority: item.priority ?? inferPriority(item.text, category),
+    state: item.state ?? "active",
+    accessCount: item.accessCount ?? 0,
+    mergeCount: item.mergeCount ?? 0,
+    aliases: item.aliases ?? [],
     createdAt: item.createdAt ?? now,
     updatedAt: item.updatedAt ?? item.createdAt ?? now
   };
@@ -130,8 +164,16 @@ async function readMemoryItems(): Promise<MemoryItem[]> {
   try {
     const raw = await fs.readFile(memoryFilePath, "utf8");
     const parsed = JSON.parse(raw) as Array<
-      Omit<MemoryItem, "summary" | "category" | "priority" | "createdAt" | "updatedAt"> &
-        Partial<Pick<MemoryItem, "summary" | "category" | "priority" | "createdAt" | "updatedAt">>
+      Omit<
+        MemoryItem,
+        "summary" | "category" | "priority" | "state" | "accessCount" | "mergeCount" | "aliases" | "createdAt" | "updatedAt"
+      > &
+        Partial<
+          Pick<
+            MemoryItem,
+            "summary" | "category" | "priority" | "state" | "accessCount" | "mergeCount" | "aliases" | "createdAt" | "updatedAt"
+          >
+        >
     >;
     const items = Array.isArray(parsed) && parsed.length ? parsed.map((item) => toStructuredMemory(item)) : memorySeed;
     await writeMemoryItems(items);
@@ -143,6 +185,31 @@ async function readMemoryItems(): Promise<MemoryItem[]> {
 
 async function writeMemoryItems(items: MemoryItem[]): Promise<void> {
   await fs.writeFile(memoryFilePath, JSON.stringify(items, null, 2), "utf8");
+}
+
+function sortForRetention(items: MemoryItem[]): MemoryItem[] {
+  return items.sort((a, b) => {
+    const byPriority = priorityWeight(b.priority) - priorityWeight(a.priority);
+    if (byPriority !== 0) return byPriority;
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+  });
+}
+
+function mergeMemory(existing: MemoryItem, incomingText: string, incomingTags: string[]): MemoryItem {
+  const updatedText = incomingText.length > existing.text.length ? incomingText : existing.text;
+  const aliases = Array.from(new Set([...existing.aliases, existing.text, incomingText])).filter(
+    (item) => normalizeText(item) !== normalizeText(updatedText)
+  );
+
+  return {
+    ...existing,
+    text: updatedText,
+    summary: buildSummary(updatedText),
+    tags: Array.from(new Set([...existing.tags, ...incomingTags])).slice(0, 12),
+    aliases: aliases.slice(0, 10),
+    mergeCount: existing.mergeCount + 1,
+    updatedAt: new Date().toISOString()
+  };
 }
 
 export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResult> {
@@ -158,20 +225,33 @@ export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResul
   if (duplicate) {
     const refreshed: MemoryItem = {
       ...duplicate,
+      accessCount: duplicate.accessCount + 1,
       updatedAt: new Date().toISOString()
     };
-    await writeMemoryItems([refreshed, ...items.filter((item) => item.id !== duplicate.id)].slice(0, 50));
+    await writeMemoryItems(sortForRetention([refreshed, ...items.filter((item) => item.id !== duplicate.id)]).slice(0, 50));
     return { saved: false, reason: "duplicate memory already exists; updated timestamp", item: refreshed };
+  }
+
+  const tags = buildTagsFromQuery(text);
+  const similar = items.find((item) => {
+    if (item.category !== inferCategory(text)) return false;
+    return similarityScore(item.tags, tags) >= 0.45;
+  });
+
+  if (similar) {
+    const merged = mergeMemory(similar, text, tags);
+    await writeMemoryItems(sortForRetention([merged, ...items.filter((item) => item.id !== similar.id)]).slice(0, 50));
+    return { saved: false, reason: "merged into similar memory", item: merged };
   }
 
   const item = toStructuredMemory({
     id: `m-local-${Date.now()}`,
     text,
-    tags: buildTagsFromQuery(text),
+    tags,
     source: "local"
   });
 
-  await writeMemoryItems([item, ...items].slice(0, 50));
+  await writeMemoryItems(sortForRetention([item, ...items]).slice(0, 50));
   return { saved: true, reason: "saved as local memory", item };
 }
 

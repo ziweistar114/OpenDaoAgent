@@ -4,6 +4,7 @@ export type AgentQuery = {
 
 export type MemoryCategory = "goal" | "preference" | "constraint" | "fact" | "question";
 export type MemoryPriority = "low" | "medium" | "high";
+export type MemoryState = "active" | "merged";
 
 export type MemoryItem = {
   id: string;
@@ -12,6 +13,10 @@ export type MemoryItem = {
   tags: string[];
   category: MemoryCategory;
   priority: MemoryPriority;
+  state: MemoryState;
+  accessCount: number;
+  mergeCount: number;
+  aliases: string[];
   createdAt: string;
   updatedAt: string;
   source: "seed" | "local";

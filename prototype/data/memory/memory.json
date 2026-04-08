@@ -10,14 +10,23 @@
       "memory",
       "local",
       "first",
-      "deployment"
+      "deployment",
+      "driven",
+      "narrow",
+      "scope"
     ],
     "source": "local",
     "summary": "What should Phase 1 focus on if we want persistent memory and local-first deployment?",
     "category": "constraint",
     "priority": "high",
     "createdAt": "2026-04-08T23:06:52.633Z",
-    "updatedAt": "2026-04-08T23:07:01.933Z"
+    "updatedAt": "2026-04-08T23:10:57.995Z",
+    "state": "active",
+    "accessCount": 1,
+    "mergeCount": 1,
+    "aliases": [
+      "Phase 1 should stay local-first, memory-driven, and narrow in scope."
+    ]
   },
   {
     "id": "m-local-1",
@@ -32,7 +41,11 @@
     "category": "constraint",
     "priority": "high",
     "createdAt": "2026-04-08T23:06:52.634Z",
-    "updatedAt": "2026-04-08T23:06:52.634Z"
+    "updatedAt": "2026-04-08T23:06:52.634Z",
+    "state": "active",
+    "accessCount": 0,
+    "mergeCount": 0,
+    "aliases": []
   },
   {
     "id": "m-local-2",
@@ -47,6 +60,10 @@
     "category": "goal",
     "priority": "medium",
     "createdAt": "2026-04-08T23:06:52.634Z",
-    "updatedAt": "2026-04-08T23:06:52.634Z"
+    "updatedAt": "2026-04-08T23:06:52.634Z",
+    "state": "active",
+    "accessCount": 0,
+    "mergeCount": 0,
+    "aliases": []
   }
 ]

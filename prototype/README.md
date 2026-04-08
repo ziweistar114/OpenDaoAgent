@@ -89,6 +89,10 @@ prototype/
 - 当前 knowledge 已支持本地 markdown / text 文档读取
 - 当前 memory 已支持最小写入与去重策略
 - 当前 memory 会自动补齐结构化字段：`summary / category / priority / createdAt / updatedAt`
+- 当前 memory 已支持最小治理规则：
+  - 重复内容只更新时间与访问次数
+  - 相似内容会合并进旧记忆
+  - 保留策略优先看 priority，其次看 updatedAt
 - 下一步最值得做的是：
-  - 把 memory 从“自动结构化”升级为更细的记忆提取、覆盖和压缩策略
+  - 把 memory 从“最小治理规则”升级为更细的摘要压缩与冲突处理
   - 把 knowledge 从“全量扫描”升级为更稳定的索引与检索机制
