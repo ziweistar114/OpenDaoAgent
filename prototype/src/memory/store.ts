@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { memoryFilePath } from "../core/paths.js";
-import type { AgentQuery, MemoryItem, RetrievedMemory } from "../shared/types.js";
+import type { AgentQuery, MemoryItem, MemoryWriteResult, RetrievedMemory } from "../shared/types.js";
 
 const memorySeed: MemoryItem[] = [
   {
@@ -28,6 +28,21 @@ function scoreText(query: string, candidate: string, tags: string[]): number {
   return score;
 }
 
+function normalizeText(text: string): string {
+  return text.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function buildTagsFromQuery(text: string): string[] {
+  return Array.from(
+    new Set(
+      text
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter((token) => token.length > 4)
+    )
+  ).slice(0, 8);
+}
+
 async function ensureMemoryFile(): Promise<void> {
   await fs.mkdir(path.dirname(memoryFilePath), { recursive: true });
 
@@ -48,6 +63,35 @@ async function readMemoryItems(): Promise<MemoryItem[]> {
   } catch {
     return memorySeed;
   }
+}
+
+async function writeMemoryItems(items: MemoryItem[]): Promise<void> {
+  await fs.writeFile(memoryFilePath, JSON.stringify(items, null, 2), "utf8");
+}
+
+export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResult> {
+  const text = query.text.trim();
+  if (text.length < 24) {
+    return { saved: false, reason: "query too short to become durable memory" };
+  }
+
+  const items = await readMemoryItems();
+  const normalizedQuery = normalizeText(text);
+
+  const duplicate = items.find((item) => normalizeText(item.text) === normalizedQuery);
+  if (duplicate) {
+    return { saved: false, reason: "duplicate memory already exists", item: duplicate };
+  }
+
+  const item: MemoryItem = {
+    id: `m-local-${Date.now()}`,
+    text,
+    tags: buildTagsFromQuery(text),
+    source: "local"
+  };
+
+  await writeMemoryItems([item, ...items].slice(0, 50));
+  return { saved: true, reason: "saved as local memory", item };
 }
 
 export async function retrieveMemory(query: AgentQuery): Promise<RetrievedMemory[]> {

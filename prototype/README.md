@@ -67,6 +67,7 @@ prototype/
 
 - memory 会优先读取本地 `memory.json`
 - knowledge 会扫描本地 markdown 或 text 文件
+- orchestrator 会尝试把有意义的新 query 写回本地 memory
 - 如果本地数据缺失，代码会回退到最小 seed 内容，保证链路可跑
 
 ## 如何开始
@@ -86,6 +87,7 @@ prototype/
 - 真正的 MVP 仍然以 `docs/FIRST_MVP.md` 为准
 - 当前 memory 已支持本地 JSON 持久化读取
 - 当前 knowledge 已支持本地 markdown / text 文档读取
+- 当前 memory 已支持最小写入与去重策略
 - 下一步最值得做的是：
-  - 把 memory 从“整文件读取”升级为更明确的记忆写入策略
+  - 把 memory 从“最小写入策略”升级为更明确的记忆分类、摘要和更新策略
   - 把 knowledge 从“全量扫描”升级为更稳定的索引与检索机制

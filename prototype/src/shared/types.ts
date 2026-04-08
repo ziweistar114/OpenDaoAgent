@@ -27,10 +27,17 @@ export type RetrievedKnowledge = {
   score: number;
 };
 
+export type MemoryWriteResult = {
+  saved: boolean;
+  reason: string;
+  item?: MemoryItem;
+};
+
 export type AgentResponse = {
   query: string;
   memoryHits: RetrievedMemory[];
   knowledgeHits: RetrievedKnowledge[];
   reply: string;
   notes: string[];
+  memoryWrite?: MemoryWriteResult;
 };

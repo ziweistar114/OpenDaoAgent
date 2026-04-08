@@ -16,6 +16,9 @@ console.log(`Allowed tools: ${listAllowedTools().join(", ")}`);
 console.log("---");
 console.log(`Query: ${response.query}`);
 console.log(`Reply: ${response.reply}`);
+if (response.memoryWrite) {
+  console.log(`Memory write: ${response.memoryWrite.reason}`);
+}
 console.log("Notes:");
 for (const note of response.notes) {
   console.log(`- ${note}`);

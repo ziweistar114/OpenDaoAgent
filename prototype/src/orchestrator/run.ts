@@ -1,5 +1,5 @@
 import type { AgentQuery, AgentResponse, RetrievedKnowledge, RetrievedMemory } from "../shared/types.js";
-import { retrieveMemory } from "../memory/store.js";
+import { rememberQuery, retrieveMemory } from "../memory/store.js";
 import { retrieveKnowledge } from "../knowledge/store.js";
 import { logStep } from "../shared/logger.js";
 
@@ -31,6 +31,9 @@ function buildReply(
 export async function runOrchestrator(query: AgentQuery): Promise<AgentResponse> {
   logStep("orchestrator", `received query: ${query.text}`);
 
+  const memoryWrite = await rememberQuery(query);
+  logStep("memory-write", memoryWrite.reason);
+
   const memoryHits = await retrieveMemory(query);
   logStep("memory", `hits: ${memoryHits.length}`);
 
@@ -42,10 +45,12 @@ export async function runOrchestrator(query: AgentQuery): Promise<AgentResponse>
     memoryHits,
     knowledgeHits,
     reply: buildReply(query, memoryHits, knowledgeHits),
+    memoryWrite,
     notes: [
       "This is a minimal prototype chain.",
       "Memory now reads from a local JSON file if available.",
-      "Knowledge now reads from local markdown or text files in prototype/data/knowledge."
+      "Knowledge now reads from local markdown or text files in prototype/data/knowledge.",
+      `Memory write status: ${memoryWrite.reason}.`
     ]
   };
 }
