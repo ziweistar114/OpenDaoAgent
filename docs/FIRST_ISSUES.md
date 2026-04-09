@@ -1,97 +1,97 @@
-# 第一批 GitHub Issues 建议
+# Suggested First GitHub Issues
 
-以下 issue 适合项目首发后立即创建，作用是让外部技术同路人看到：
+These issues are good candidates to create right after public launch. Their purpose is simple:
 
-- 项目当前真正缺什么
-- 可以从哪里加入
-- 哪些问题值得优先讨论
+- show what the project actually needs
+- show where outside contributors can join
+- show which questions deserve early discussion
 
 ## 1. Define the Phase 1 MVP Scope
 
-目标：
+Goal:
 
-- 把第一阶段 MVP 范围压实
-- 明确哪些事情必须做，哪些不进入第一阶段
+- tighten the actual Phase 1 scope
+- make clear what is required and what does not belong in this phase
 
-建议标签：
+Suggested labels:
 
 - `discussion needed`
 - `architecture`
 
 ## 2. Design the Memory Architecture
 
-目标：
+Goal:
 
-- 明确短期记忆、长期记忆、更新机制、删除与回滚策略
+- define short-term memory, durable memory, update rules, deletion rules, and rollback strategy
 
-建议标签：
+Suggested labels:
 
 - `memory`
 - `architecture`
 
 ## 3. Evaluate Local-First Deployment Options
 
-目标：
+Goal:
 
-- 比较本地部署方式
-- 明确第一阶段推荐方案
+- compare local deployment paths
+- recommend a Phase 1 default approach
 
-建议标签：
+Suggested labels:
 
 - `infra`
 - `local-first`
 
-## 4. Prototype Knowledge Ingestion Pipeline
+## 4. Prototype the Knowledge Ingestion Pipeline
 
-目标：
+Goal:
 
-- 明确本地文档导入、索引、检索增强的第一版实现路径
+- define the first implementation path for local document ingestion, indexing, and stronger retrieval
 
-建议标签：
+Suggested labels:
 
 - `rag`
 - `architecture`
 
 ## 5. Draft Agent Safety Boundaries
 
-目标：
+Goal:
 
-- 明确第一阶段工具调用边界、危险操作约束、审计基础
+- define tool boundaries, dangerous operation constraints, and minimum audit expectations for Phase 1
 
-建议标签：
+Suggested labels:
 
 - `safety`
 - `discussion needed`
 
-## 6. Create Initial Frontend Shell
+## 6. Build the Initial Frontend Shell
 
-目标：
+Goal:
 
-- 做一个极简可交互前端壳子，用来承接 MVP 演示
+- create a very small interactive frontend shell that can carry the MVP walkthrough
 
-建议标签：
+Suggested labels:
 
 - `frontend`
 - `good first issue`
 
-## 7. Create Initial Project Structure
+## 7. Strengthen the Initial Project Structure
 
-目标：
+Goal:
 
-- 把仓库目录结构补成适合原型开发的样子
+- keep the repository structure clean enough for real prototype work to continue without chaos
 
-建议标签：
+Suggested labels:
 
 - `backend`
 - `good first issue`
 
-## 8. Write an English Project Introduction
+## 8. Improve the Public English Project Introduction
 
-目标：
+Goal:
 
-- 补充英文介绍，方便非中文开发者理解项目方向
+- refine the English project introduction so non-Chinese contributors can understand the direction quickly
 
-建议标签：
+Suggested labels:
 
 - `docs`
 - `good first issue`

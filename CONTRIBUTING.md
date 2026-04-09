@@ -1,76 +1,71 @@
 # Contributing
 
-感谢你对 `OpenDaoAgent` 感兴趣。
+Thanks for your interest in `OpenDaoAgent`.
 
-这个项目当前仍处在早期发起阶段，所以我们比起“快速堆功能”，更重视以下几件事：
+This project is still in an early founding stage. At this point, we value direction, boundaries, and long-term maintainability more than raw feature speed.
 
-- 方向不要跑偏
-- 边界要清楚
-- 模块要能继续长
-- 协作要能持续
+Chinese entry: [README_ZH.md](./README_ZH.md)
 
-## 当前更欢迎什么贡献
+## What Contributions Are Most Helpful Right Now
 
-目前更欢迎这几类贡献：
+### 1. Architecture Contributions
 
-### 1. 架构贡献
+- durable memory design
+- local-first deployment strategy
+- cross-device continuity design
+- tool boundary design
+- audit and rollback strategy
 
-- 长期记忆设计
-- 本地优先部署方案
-- 跨设备连续性方案
-- 工具调用边界设计
-- 审计与回滚机制设计
+### 2. Engineering Contributions
 
-### 2. 工程贡献
+- backend foundation work
+- agent orchestration
+- RAG, retrieval, and knowledge ingestion
+- Docker and local deployment
+- minimal runnable prototype improvements
 
-- 后端基础能力
-- Agent 编排
-- RAG / 检索 / 知识接入
-- Docker / 本地部署
-- 最小可运行原型
+### 3. Product and Documentation Contributions
 
-### 3. 产品与文档贡献
+- README refinement
+- tighter MVP scope definition
+- clearer contributor onboarding
+- recruitment and community wording
+- issue and discussion templates
 
-- README 优化
-- MVP 范围收敛
-- 用户路径梳理
-- 招募与社区文案
-- issue 模板、讨论模板
+## Before You Contribute
 
-## 贡献前建议
+Before opening a PR or proposing a change, please check:
 
-在提交代码或文档前，请先确认：
+1. Does this serve the current phase goal?
+2. Does it expand scope unnecessarily?
+3. Does it conflict with the project's local-first, durable-memory, and auditable-behavior principles?
+4. Does it make the project look bigger while making it harder to actually deliver?
 
-1. 这项改动是否服务于当前阶段目标
-2. 它是否扩大了不必要的范围
-3. 它是否破坏了本地优先、长期记忆、可审计这几个核心原则
-4. 它是否会把项目推向“看起来很大，但无法交付”
+## Areas We Do Not Want To Prioritize Yet
 
-## 当前不鼓励的方向
+The following directions are not Phase 1 priorities:
 
-以下方向暂时不鼓励优先投入：
+- blockchainization
+- DAO governance implementation
+- token economics
+- premature AGI narratives
+- overly complex global distributed architecture
+- unbounded autonomy and over-automation
 
-- 区块链化
-- DAO 治理实现
-- Token 经济
-- 超前 AGI 叙事
-- 复杂全球分布式架构
-- 过度自动化和无边界自治
+These areas are not permanently banned. They are simply out of scope for the current phase.
 
-这些方向并不一定永远不做，但不属于当前阶段的重点。
+## Suggested Onboarding Order
 
-## 协作建议
+If you want to join, the recommended order is:
 
-如果你想加入，推荐顺序是：
+1. Read `README.md`
+2. Read `MANIFESTO.md`
+3. Read `docs/FIRST_MVP.md`
+4. Read open issues or start a scoped discussion
 
-1. 先读 `README.md`
-2. 再读 `MANIFESTO.md`
-3. 再看 `docs/FIRST_MVP.md`
-4. 认领 issue 或先发 discussion
+## Suggested Issue Labels
 
-## Issue 建议标签
-
-建议首批 issue 使用这些标签：
+Recommended labels for early issues:
 
 - `good first issue`
 - `architecture`
@@ -82,26 +77,22 @@
 - `docs`
 - `discussion needed`
 
-## 提交风格
+## Preferred PR Style
 
-我们更欢迎：
+We welcome:
 
-- 小步、清楚、可解释的提交
-- 能说明“为什么这么改”的提交
-- 不夸大、不偷换概念的文档
+- small, clear, reviewable changes
+- commits that explain why the change exists
+- documentation that avoids overclaiming unfinished work
 
-我们不欢迎：
+We do not welcome:
 
-- 一次性大而杂的改动
-- 没有边界说明的功能扩张
-- 把愿景文案写成已实现事实
+- large mixed changes without clear boundaries
+- scope expansion without a phase-aware explanation
+- turning roadmap language into implementation facts
 
-## 最后
+## Final Note
 
-这个项目当前更像一个长期方向的“起点工程”，而不是成熟产品。
+This project is currently more like a serious starting point than a mature product.
 
-所以最重要的不是显得多厉害，而是：
-
-- 真的能跑
-- 真的能记
-- 真的能继续做下去
+The most important thing is not to make it look impressive. The most important thing is to keep it real, runnable, inspectable, and worth continuing.

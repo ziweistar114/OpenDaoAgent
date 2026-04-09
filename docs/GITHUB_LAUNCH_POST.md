@@ -1,67 +1,67 @@
-# GitHub 首发招募文案
+# GitHub Launch Post Draft
 
-## 短版
+## Short Version
 
-我准备发起一个开源项目，方向不是普通聊天机器人，也不是一次性任务 Agent。
+I am starting an open-source project that is not trying to be just another chatbot or one-shot task agent.
 
-它更像一个开放智能体底座，重点做这几件事：
+The direction is closer to an open agent foundation focused on:
 
-- 长期记忆
-- 本地优先
-- 跨端连续性
-- 授权知识接入
-- 长期服务，而不是一轮对话后就结束
+- long-term memory
+- local-first deployment
+- cross-device continuity
+- authorized knowledge ingestion
+- long-term service instead of single-session interaction
 
-我不想先空谈 AGI，也不想先讲太大的词。  
-更想先把最小原型做出来，放到 GitHub 上，然后找愿意一起做这条路的技术同路人。
+I do not want to start with AGI rhetoric or oversized claims.
+I want to start by building a minimal runnable prototype, putting it on GitHub, and finding technical collaborators who want to help explore this path seriously.
 
-当前更想认识的伙伴：
+The kinds of people I would most like to meet right now:
 
-- Agent / LLM 应用工程
-- RAG / 知识库 / 记忆系统
-- 后端 / 本地部署 / Docker / infra
-- 前端原型 / 产品交互
-- 开源协作与社区维护
+- agent and LLM application engineers
+- RAG, retrieval, and memory system builders
+- backend, local deployment, Docker, and infra engineers
+- frontend prototypers and interaction designers
+- open-source documentation and community builders
 
-如果你也对“长期存在的开放智能体”这个方向有兴趣，欢迎一起聊。
+If you are interested in the direction of a long-term open agent foundation, I would be glad to talk.
 
 ---
 
-## 长版
+## Long Version
 
-我想发起一个开源项目。
+I want to start an open-source project.
 
-它不是普通聊天机器人，  
-也不是只会执行命令的一次性 Agent。
+It is not meant to be a normal chatbot,
+and not just a one-shot agent that executes commands and disappears.
 
-我想做的方向更像是一个长期主义的开放智能体底座：
+The direction I want to explore is closer to a long-term open agent foundation:
 
-- 它能记住，而不是每次都从头开始
-- 它能延续，而不是只活在一个窗口里
-- 它能在授权边界内学习，而不是只靠短期上下文
-- 它能本地部署，也能逐步探索跨设备连续性
-- 它的目标是长期服务，而不是只完成一次指令
+- it remembers instead of starting from zero every time
+- it persists instead of living in a single window
+- it can learn within authorized boundaries instead of relying only on short-term context
+- it can begin local-first and later explore cross-device continuity
+- it aims for long-term service rather than single-turn task completion
 
-我不打算一开始就空谈“AGI”“数字生命”“终极智能”。
+I do not want to begin by talking about AGI, digital life, or final intelligence.
 
-我更想先把第一步做出来：
+I want to begin with something more concrete:
 
-做一个最小可运行原型，  
-证明这条路线不是空话，  
-证明它值得继续投入，  
-证明它能吸引真正愿意长期做事的人加入。
+build a minimal runnable prototype,
+prove that this direction is not empty language,
+prove that it is worth continued investment,
+and prove that it can attract serious people who want to build for the long term.
 
-我希望优先找到的，是这些方向的技术同路人：
+The first kinds of technical collaborators I hope to find are people interested in:
 
-- Agent orchestration
-- Long-term memory systems
-- RAG / knowledge ingestion
-- Local-first deployment
-- Backend / infra / Docker
-- Frontend prototype & interaction
-- Open-source documentation and collaboration
+- agent orchestration
+- long-term memory systems
+- RAG and knowledge ingestion
+- local-first deployment
+- backend, infra, and Docker
+- frontend prototype and interaction work
+- open-source documentation and collaboration
 
-这不是招打工人。  
-更像是在找早期共建者。
+This is not a call for short-term labor.
+It is closer to a search for early co-builders.
 
-如果你对“长期存在的开放智能体底座”这个方向有兴趣，欢迎一起讨论、一起拆问题、一起把第一版做出来。
+If the idea of a long-term open agent foundation is interesting to you, I would be glad to discuss it, break the problem down together, and build the first real version together.
