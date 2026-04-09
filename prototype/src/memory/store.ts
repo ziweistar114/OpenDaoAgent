@@ -54,11 +54,14 @@ function extractSearchTokens(text: string): string[] {
     ["来源", ["source"]],
     ["可追踪", ["source", "retrieval"]],
     ["检索", ["retrieval"]],
+    ["检索层", ["retrieval"]],
     ["架构", ["architecture"]],
     ["知识", ["knowledge"]],
     ["部署", ["deployment"]],
     ["偏好", ["preference"]],
-    ["历史", ["history"]]
+    ["历史", ["history"]],
+    ["向量数据库", ["vector", "database"]],
+    ["数据库", ["database"]]
   ];
 
   const expanded = [...matches];

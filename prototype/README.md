@@ -69,6 +69,7 @@ prototype/
 - knowledge 会扫描本地 markdown 或 text 文件，切成最小 chunk，并把结果缓存到本地索引
 - orchestrator 会尝试把有意义的新 query 写回本地 memory
 - 如果本地数据缺失，代码会回退到最小 seed 内容，保证链路可跑
+- 当前 `data/knowledge/` 已同时包含英文与中文知识文档，便于做中英混合演示
 
 ## 如何开始
 
@@ -151,6 +152,7 @@ curl -X POST http://localhost:3010/api/query \
 - 当前 knowledge 已支持最小 chunk 切分与 chunk 级 source 引用
 - 当前 knowledge 已支持最小索引缓存：文件未变化时直接复用 `data/knowledge/.index-cache.json`
 - 当前 knowledge 已支持最小导入入口，可把本地文件或文本写入 `data/knowledge/`
+- 当前 knowledge 已补入首批中文知识内容，覆盖阶段重点、检索设计、记忆原则
 - 当前 memory 已支持最小写入与去重策略
 - 当前 memory 会自动补齐结构化字段：`summary / category / priority / createdAt / updatedAt`
 - 当前 orchestrator 已支持最小路由判断：`memory-first / knowledge-first / hybrid / fallback`
