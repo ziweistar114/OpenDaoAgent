@@ -43,12 +43,42 @@ const memorySeed: MemoryItem[] = [
   }
 ];
 
+function extractSearchTokens(text: string): string[] {
+  const matches = text.toLowerCase().match(/[\u4e00-\u9fff]{2,}|[a-z0-9-]{2,}/g) || [];
+  const semanticAliases: Array<[string, string[]]> = [
+    ["本地", ["local", "local-first"]],
+    ["阶段", ["phase", "phase1"]],
+    ["第一阶段", ["phase", "phase1"]],
+    ["记忆", ["memory"]],
+    ["长期记忆", ["memory", "persistent"]],
+    ["来源", ["source"]],
+    ["可追踪", ["source", "retrieval"]],
+    ["检索", ["retrieval"]],
+    ["架构", ["architecture"]],
+    ["知识", ["knowledge"]],
+    ["部署", ["deployment"]],
+    ["偏好", ["preference"]],
+    ["历史", ["history"]]
+  ];
+
+  const expanded = [...matches];
+  for (const [keyword, aliases] of semanticAliases) {
+    if (text.includes(keyword)) {
+      expanded.push(...aliases);
+    }
+  }
+
+  return Array.from(new Set(expanded));
+}
+
 function scoreText(query: string, candidate: string, tags: string[]): number {
-  const tokens = query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  const tokens = extractSearchTokens(query);
+  const normalizedCandidate = candidate.toLowerCase();
+  const normalizedTags = tags.map((tag) => tag.toLowerCase());
   let score = 0;
   for (const token of tokens) {
-    if (candidate.toLowerCase().includes(token)) score += 2;
-    if (tags.some((tag) => tag.toLowerCase().includes(token))) score += 1;
+    if (normalizedCandidate.includes(token)) score += 2;
+    if (normalizedTags.some((tag) => tag.includes(token))) score += 1;
   }
   return score;
 }
@@ -69,28 +99,45 @@ function buildCompressedSummary(text: string, aliases: string[]): string {
 }
 
 function buildTagsFromQuery(text: string): string[] {
-  return Array.from(
-    new Set(
-      text
-        .toLowerCase()
-        .split(/[^a-z0-9]+/)
-        .filter((token) => token.length > 4)
-    )
-  ).slice(0, 8);
+  return extractSearchTokens(text)
+    .filter((token) => token.length > 1)
+    .slice(0, 8);
 }
 
 function inferCategory(text: string): MemoryCategory {
   const normalized = text.toLowerCase();
-  if (normalized.includes("should") || normalized.includes("must") || normalized.includes("need to")) {
+  if (
+    normalized.includes("should") ||
+    normalized.includes("must") ||
+    normalized.includes("need to") ||
+    text.includes("应该") ||
+    text.includes("必须") ||
+    text.includes("需要")
+  ) {
     return "constraint";
   }
-  if (normalized.includes("prefer") || normalized.includes("like") || normalized.includes("want")) {
+  if (
+    normalized.includes("prefer") ||
+    normalized.includes("like") ||
+    normalized.includes("want") ||
+    text.includes("偏好") ||
+    text.includes("喜欢") ||
+    text.includes("希望") ||
+    text.includes("想要")
+  ) {
     return "preference";
   }
-  if (normalized.includes("?")) {
+  if (normalized.includes("?") || text.includes("？") || text.includes("什么") || text.includes("如何") || text.includes("怎么")) {
     return "question";
   }
-  if (normalized.includes("goal") || normalized.includes("milestone") || normalized.includes("phase")) {
+  if (
+    normalized.includes("goal") ||
+    normalized.includes("milestone") ||
+    normalized.includes("phase") ||
+    text.includes("目标") ||
+    text.includes("里程碑") ||
+    text.includes("阶段")
+  ) {
     return "goal";
   }
   return "fact";
@@ -102,11 +149,14 @@ function inferPriority(text: string, category: MemoryCategory): MemoryPriority {
     category === "constraint" ||
     normalized.includes("must") ||
     normalized.includes("critical") ||
-    normalized.includes("priority")
+    normalized.includes("priority") ||
+    text.includes("必须") ||
+    text.includes("关键") ||
+    text.includes("优先")
   ) {
     return "high";
   }
-  if (category === "goal" || normalized.includes("phase") || normalized.includes("milestone")) {
+  if (category === "goal" || normalized.includes("phase") || normalized.includes("milestone") || text.includes("阶段") || text.includes("里程碑")) {
     return "medium";
   }
   return "low";

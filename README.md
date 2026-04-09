@@ -2,91 +2,34 @@
 
 一个面向长期记忆、长期存在、跨端连续性的开放智能体底座。
 
-## 这是什么
+## 一句话说明
 
-`OpenDaoAgent` 不是普通聊天机器人，也不是一次性任务执行器。
+`OpenDaoAgent` 想做的，不是一次性回答问题的聊天工具，而是一个可以长期存在、长期记忆、长期服务的开放智能体底座。
 
-它要探索的是另一条路线：
+它当前不是终极形态，也不是空想叙事；它首先要成为一个真正能跑、能被别人看懂、能持续迭代的开源起点。
 
-- 不只回答一轮问题，而是长期陪伴与长期服务
-- 不只依赖临时上下文，而是拥有可继承的长期记忆
-- 不只活在一个窗口里，而是能在本地、云端、多设备之间保持连续性
-- 不只做“工具调用”，而是逐步形成面向人的持续服务能力
+## 现在已经有什么
 
-这个项目当前仍处于发起阶段。它不是 AGI 宣言，也不是“数字神明”项目。它首先是一个务实的开源起点：把一个真正可长期存在的智能体底座做出来。
+仓库现在已经不只是文档草稿，`prototype/` 里已经有一条真实可跑的最小演示链路：
 
-## 为什么做
-
-今天大多数 AI 系统仍然是“会话型工具”：
-
-- 会回答，但不会真正留下来
-- 会执行，但不会持续成长
-- 会配合，但不会长期记住你和你的环境
-
-我们想尝试另一种可能：
-
-- 让智能体具备长期记忆
-- 让智能体具备跨设备连续性
-- 让智能体在授权边界内持续学习
-- 让智能体成为长期服务系统，而不是一次性响应系统
-
-## 当前目标
-
-当前目标不是做“全人类通用数字生命”的终极形态。
-
-当前目标只有一个：
-
-构建一个最小可行的开放智能体底座，验证以下能力是否能被组合成一个真正长期存在的系统：
-
-- 本地优先部署
-- 长期记忆
-- 授权知识接入
-- 安全边界
-- 可审计行为
-- 跨设备连续性设计
-
-## 这个项目不是什么
-
-这个项目当前不是：
-
-- 一个宗教项目
-- 一个玄学包装的空想工程
-- 一个无限制自动化代理
-- 一个监控用户的系统
-- 一个已经成熟可商用的 AGI 平台
-- 一个替代人类判断的终极决策机器
-
-## 第一阶段范围
-
-第一阶段只做最小原型，重点验证 6 件事：
-
-1. 本地部署是否足够稳定
-2. 长期记忆层如何设计
-3. 授权知识如何持续接入
-4. 工具调用如何保持安全和可审计
-5. 多设备连续性怎么落地
-6. 这个方向是否值得吸引更多技术同路人加入
-
-详细见：
-
-- [项目宣言](./MANIFESTO.md)
-- [路线图](./ROADMAP.md)
-- [第一阶段 MVP](./docs/FIRST_MVP.md)
-- [架构草图](./docs/ARCHITECTURE.md)
-- [贡献说明](./CONTRIBUTING.md)
-
-## 当前可演示内容
-
-仓库现在已经不只是文档起步版，`prototype/` 里有一条真实可跑的最小演示链路：
-
-- 浏览器页面：可直接在本地网页里提问
+- 浏览器演示页：可直接在本地网页提问
 - HTTP API：`GET /health`、`POST /api/query`
-- 本地 memory：会保存有意义的 query，并参与后续检索
-- 本地 knowledge：从 markdown / text 文档切 chunk 检索
-- 统一响应格式：包含 `summary / evidence / nextActions / route / memory / knowledge / system`
-- source 引用与原始 JSON：方便验证回答是否有依据
+- 本地记忆层：会保存有意义的 query，并参与后续检索
+- 本地知识层：从 markdown / text 文档切块检索
+- 统一响应结构：`summary / evidence / nextActions / route / memory / knowledge / system`
+- source 引用与原始 JSON：可以检查回答到底有没有依据
 
-快速体验：
+## 先看什么
+
+如果你第一次打开这个项目，建议按这个顺序看：
+
+1. [prototype/README.md](./prototype/README.md)
+2. [第一阶段 MVP](./docs/FIRST_MVP.md)
+3. [架构草图](./docs/ARCHITECTURE.md)
+4. [路线图](./ROADMAP.md)
+5. [项目宣言](./MANIFESTO.md)
+
+## 本地快速体验
 
 ```bash
 cd prototype
@@ -100,35 +43,51 @@ npm run dev
 http://localhost:3010/
 ```
 
-原型说明见：
+## 这个项目想解决什么
 
-- [prototype/README.md](./prototype/README.md)
+今天大多数 AI 系统仍然停留在“会话型工具”层面：
 
-## 当前仓库建议结构
+- 会回答，但不会真正留下来
+- 会执行，但不会持续成长
+- 会配合，但不会长期记住你和你的环境
 
-```text
-OpenDaoAgent/
-├─ README.md
-├─ README_EN.md
-├─ MANIFESTO.md
-├─ ROADMAP.md
-├─ CONTRIBUTING.md
-├─ .github/
-│  ├─ ISSUE_TEMPLATE/
-│  └─ PULL_REQUEST_TEMPLATE.md
-├─ prototype/
-│  ├─ README.md
-│  ├─ package.json
-│  ├─ tsconfig.json
-│  └─ src/
-└─ docs/
-   ├─ ARCHITECTURE.md
-   ├─ COMMUNITY_GUIDE.md
-   ├─ FIRST_ISSUES.md
-   ├─ FIRST_MVP.md
-   ├─ GITHUB_LAUNCH_POST.md
-   └─ LICENSE_DECISION.md
-```
+`OpenDaoAgent` 想尝试另一条路线：
+
+- 让智能体具备长期记忆
+- 让智能体具备跨设备连续性
+- 让智能体在授权边界内持续学习
+- 让智能体成为长期服务系统，而不是一次性响应系统
+
+## 第一阶段目标
+
+第一阶段不追求“全人类通用数字生命”的终极形态，只验证最核心的底座能力能不能站住：
+
+- 本地优先部署
+- 长期记忆
+- 授权知识接入
+- 安全边界
+- 可审计行为
+- 跨设备连续性设计
+
+当前重点验证 6 件事：
+
+1. 本地部署是否足够稳定
+2. 长期记忆层如何设计
+3. 授权知识如何持续接入
+4. 工具调用如何保持安全和可审计
+5. 多设备连续性怎么落地
+6. 这个方向是否值得吸引更多技术同路人加入
+
+## 这个项目不是什么
+
+这个项目当前不是：
+
+- 一个宗教项目
+- 一个玄学包装的空想工程
+- 一个无限制自动化代理
+- 一个监控用户的系统
+- 一个已经成熟可商用的 AGI 平台
+- 一个替代人类判断的终极决策机器
 
 ## 我们希望谁加入
 
@@ -158,6 +117,43 @@ OpenDaoAgent/
 4. 先验证长期记忆与连续性，再谈全局智能
 5. 所有能力必须在合规、可控、可审计边界内推进
 
+## 继续深入
+
+- [项目宣言](./MANIFESTO.md)
+- [路线图](./ROADMAP.md)
+- [第一阶段 MVP](./docs/FIRST_MVP.md)
+- [架构草图](./docs/ARCHITECTURE.md)
+- [贡献说明](./CONTRIBUTING.md)
+- [社区协作说明](./docs/COMMUNITY_GUIDE.md)
+- [首批 issue 建议](./docs/FIRST_ISSUES.md)
+- [GitHub 首发招募文案](./docs/GITHUB_LAUNCH_POST.md)
+
+## 当前仓库建议结构
+
+```text
+OpenDaoAgent/
+├─ README.md
+├─ README_EN.md
+├─ MANIFESTO.md
+├─ ROADMAP.md
+├─ CONTRIBUTING.md
+├─ .github/
+│  ├─ ISSUE_TEMPLATE/
+│  └─ PULL_REQUEST_TEMPLATE.md
+├─ prototype/
+│  ├─ README.md
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  └─ src/
+└─ docs/
+   ├─ ARCHITECTURE.md
+   ├─ COMMUNITY_GUIDE.md
+   ├─ FIRST_ISSUES.md
+   ├─ FIRST_MVP.md
+   ├─ GITHUB_LAUNCH_POST.md
+   └─ LICENSE_DECISION.md
+```
+
 ## 发布前建议
 
 如果你准备把本仓库公开到 GitHub，建议在首发前确认：
@@ -181,13 +177,13 @@ OpenDaoAgent/
 
 ## 当前状态
 
-当前状态：发起阶段 / 文档 + 最小可运行原型
+当前状态：发起阶段 / 文档 + 最小可运行原型。
 
-下一步最重要的事不是继续讲大愿景，而是：
+下一步最重要的事，不是继续放大愿景，而是继续把基础做扎实：
 
-- 放入最小原型
-- 明确模块边界
-- 建立第一批 issues
-- 邀请第一批技术同路人
+- 把原型继续做深，而不只是做表面演示
+- 明确模块边界和演进顺序
+- 建立第一批可执行 issue
+- 吸引第一批真正愿意动手的技术同路人
 
 如果你愿意一起把这件事从“概念”推进成“基础设施雏形”，欢迎加入。

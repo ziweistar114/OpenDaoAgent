@@ -44,12 +44,44 @@ type KnowledgeIndexCache = {
   items: KnowledgeItem[];
 };
 
+function extractSearchTokens(text: string): string[] {
+  const matches = text.toLowerCase().match(/[\u4e00-\u9fff]{2,}|[a-z0-9-]{2,}/g) || [];
+  const semanticAliases: Array<[string, string[]]> = [
+    ["本地", ["local", "local-first"]],
+    ["阶段", ["phase", "phase1"]],
+    ["第一阶段", ["phase", "phase1"]],
+    ["记忆", ["memory"]],
+    ["长期记忆", ["memory", "persistent"]],
+    ["来源", ["source"]],
+    ["可追踪", ["source", "retrieval"]],
+    ["检索", ["retrieval"]],
+    ["架构", ["architecture"]],
+    ["知识", ["knowledge"]],
+    ["部署", ["deployment"]],
+    ["文档", ["document"]],
+    ["为什么", ["why"]],
+    ["如何", ["how"]],
+    ["怎么", ["how"]]
+  ];
+
+  const expanded = [...matches];
+  for (const [keyword, aliases] of semanticAliases) {
+    if (text.includes(keyword)) {
+      expanded.push(...aliases);
+    }
+  }
+
+  return Array.from(new Set(expanded));
+}
+
 function scoreText(query: string, candidate: string, tags: string[]): number {
-  const tokens = query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  const tokens = extractSearchTokens(query);
+  const normalizedCandidate = candidate.toLowerCase();
+  const normalizedTags = tags.map((tag) => tag.toLowerCase());
   let score = 0;
   for (const token of tokens) {
-    if (candidate.toLowerCase().includes(token)) score += 2;
-    if (tags.some((tag) => tag.toLowerCase().includes(token))) score += 1;
+    if (normalizedCandidate.includes(token)) score += 2;
+    if (normalizedTags.some((tag) => tag.includes(token))) score += 1;
   }
   return score;
 }
@@ -123,16 +155,9 @@ function splitIntoChunks(content: string): string[] {
 }
 
 function extractTags(fileName: string, content: string): string[] {
-  const fromName = fileName
-    .toLowerCase()
-    .replace(/\.[^.]+$/, "")
-    .split(/[^a-z0-9]+/)
-    .filter(Boolean);
-
-  const fromContent = content
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((token) => token.length > 4)
+  const fromName = extractSearchTokens(fileName.replace(/\.[^.]+$/, ""));
+  const fromContent = extractSearchTokens(content)
+    .filter((token) => token.length > 1)
     .slice(0, 8);
 
   return Array.from(new Set([...fromName, ...fromContent])).slice(0, 12);

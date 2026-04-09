@@ -10,8 +10,26 @@ import { logStep } from "../shared/logger.js";
 
 function decideRoute(query: AgentQuery): AgentRouteDecision {
   const text = query.text.toLowerCase();
-  const memorySignals = ["remember", "memory", "preference", "history", "again", "previous"];
-  const knowledgeSignals = ["document", "knowledge", "source", "retrieval", "architecture", "how", "what", "why"];
+  const memorySignals = ["remember", "memory", "preference", "history", "again", "previous", "记住", "记忆", "偏好", "历史", "以前", "之前"];
+  const knowledgeSignals = [
+    "document",
+    "knowledge",
+    "source",
+    "retrieval",
+    "architecture",
+    "how",
+    "what",
+    "why",
+    "文档",
+    "知识",
+    "来源",
+    "检索",
+    "架构",
+    "如何",
+    "怎么",
+    "为什么",
+    "什么"
+  ];
 
   const memoryScore = memorySignals.filter((signal) => text.includes(signal)).length;
   const knowledgeScore = knowledgeSignals.filter((signal) => text.includes(signal)).length;
@@ -60,37 +78,37 @@ function buildReply(
   const nextActions: string[] = [];
 
   if (memoryHits.length) {
-    evidence.push(`Memory: ${memoryHits[0].item.summary}`);
+    evidence.push(`记忆命中: ${memoryHits[0].item.summary}`);
   }
 
   if (knowledgeHits.length) {
-    evidence.push(`Knowledge: ${knowledgeHits[0].item.summary} (${knowledgeHits[0].item.source})`);
+    evidence.push(`知识命中: ${knowledgeHits[0].item.summary} (${knowledgeHits[0].item.source})`);
   }
 
   if (!knowledgeHits.length) {
-    nextActions.push("Add or refresh local documents in prototype/data/knowledge for stronger source-backed guidance.");
+    nextActions.push("补充或更新 prototype/data/knowledge 里的本地文档，让回答更有来源依据。");
   }
 
   if (!memoryHits.length) {
-    nextActions.push("Ask a more preference-rich or continuity-focused question to strengthen local memory retrieval.");
+    nextActions.push("尝试提出更明显带有偏好、连续性或历史上下文的问题，增强本地记忆检索。");
   }
 
   if (!nextActions.length) {
-    nextActions.push("Keep expanding the local-first chain while preserving inspectable memory and source-backed knowledge.");
+    nextActions.push("继续扩展这条本地优先链路，同时保持记忆可检查、知识可追溯。");
   }
 
-  const summaryParts = [`Route selected: ${route.mode}.`];
+  const summaryParts = [`当前路由: ${route.mode}。`];
 
   if (memoryHits.length) {
-    summaryParts.push(`Memory emphasizes ${memoryHits[0].item.summary}`);
+    summaryParts.push(`记忆侧强调的是：${memoryHits[0].item.summary}`);
   }
 
   if (knowledgeHits.length) {
-    summaryParts.push(`Knowledge emphasizes ${knowledgeHits[0].item.summary}`);
+    summaryParts.push(`知识侧强调的是：${knowledgeHits[0].item.summary}`);
   }
 
   if (summaryParts.length === 1) {
-    summaryParts.push("No strong memory or knowledge match was found yet.");
+    summaryParts.push("当前还没有找到足够强的记忆或知识命中。");
   }
 
   return {
@@ -138,11 +156,11 @@ export async function runOrchestrator(query: AgentQuery): Promise<AgentResponse>
     system: {
       generatedAt: new Date().toISOString(),
       notes: [
-      "This is a minimal prototype chain.",
+      "这是当前最小可运行原型链路。",
       `Route mode: ${route.mode}.`,
       `Route reason: ${route.reason}.`,
-      "Memory now reads from a local JSON file if available.",
-      `Knowledge now reads from local markdown or text files in prototype/data/knowledge using a ${knowledge.index.cacheState} index.`,
+      "Memory currently reads from a local JSON file if available.",
+      `Knowledge currently reads from local markdown or text files in prototype/data/knowledge using a ${knowledge.index.cacheState} index.`,
       `Memory write status: ${memoryWrite.reason}.`
       ]
     }
