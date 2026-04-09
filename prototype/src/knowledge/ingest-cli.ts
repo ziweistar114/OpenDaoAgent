@@ -59,7 +59,7 @@ const options = parseArgs(process.argv.slice(2));
 const payload = await resolveContent(options);
 const result = await ingestLocalDocument(payload);
 
-console.log("Knowledge document imported.");
+console.log(`Knowledge document ${result.action}.`);
 console.log(`- title: ${result.title}`);
 console.log(`- file: ${result.fileName}`);
 console.log(`- path: ${result.filePath}`);

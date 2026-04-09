@@ -119,10 +119,17 @@ npm run ingest:file -- --title "Temporary Note" --text "Local-first memory shoul
 
 The CLI now prints:
 
+- import action: `created`, `updated`, or `duplicate`
 - detected language
 - chunk count
 - extracted tags
 - refreshed index status
+
+Import behavior:
+
+- exact duplicate content returns `duplicate` and reuses the existing document
+- same title or same target file updates the existing document in place
+- new content with a new target creates a new document
 
 ## Minimal HTTP API
 
@@ -162,6 +169,12 @@ curl -X POST http://localhost:3010/api/knowledge/import \
   -H "Content-Type: application/json" \
   -d "{\"title\":\"Fresh Note\",\"content\":\"Phase 1 should stay inspectable and local-first.\"}"
 ```
+
+The import response now includes:
+
+- `action`
+- document summary metadata
+- refreshed knowledge index status
 
 ## Current Status
 

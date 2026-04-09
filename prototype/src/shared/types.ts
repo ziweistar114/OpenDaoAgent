@@ -70,6 +70,7 @@ export type KnowledgeRetrievalResult = {
 };
 
 export type KnowledgeImportResult = {
+  action: "created" | "updated" | "duplicate";
   fileName: string;
   filePath: string;
   title: string;

@@ -102,6 +102,15 @@ function detectKnowledgeLanguage(content: string): KnowledgeLanguage {
   return zhMatches.length ? "zh" : "en";
 }
 
+function normalizeComparableContent(content: string): string {
+  return content
+    .replace(/^#.*$/gm, "")
+    .replace(/\r?\n+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
 function scoreText(query: string, candidate: string, tags: string[]): number {
   const tokens = extractSearchTokens(query);
   const normalizedCandidate = candidate.toLowerCase();
@@ -344,6 +353,12 @@ function buildDocumentSummary(document: IndexedKnowledgeDocument, characterCount
   };
 }
 
+type ExistingKnowledgeDocument = IndexedKnowledgeDocument & {
+  filePath: string;
+  content: string;
+  normalizedContent: string;
+};
+
 async function inspectKnowledgeDocument(document: KnowledgeCacheDocument): Promise<IndexedKnowledgeDocument> {
   const filePath = path.join(knowledgeDirPath, document.fileName);
   const content = await fs.readFile(filePath, "utf8");
@@ -357,6 +372,27 @@ async function inspectKnowledgeDocument(document: KnowledgeCacheDocument): Promi
     tags: extractTags(document.fileName, `${title} ${content}`),
     chunkCount: chunks.length
   };
+}
+
+async function inspectExistingKnowledgeDocument(
+  document: KnowledgeCacheDocument
+): Promise<ExistingKnowledgeDocument> {
+  const filePath = path.join(knowledgeDirPath, document.fileName);
+  const content = await fs.readFile(filePath, "utf8");
+  const indexed = await inspectKnowledgeDocument(document);
+
+  return {
+    ...indexed,
+    filePath,
+    content,
+    normalizedContent: normalizeComparableContent(content)
+  };
+}
+
+async function readExistingKnowledgeDocuments(): Promise<ExistingKnowledgeDocument[]> {
+  await ensureKnowledgeDir();
+  const documents = await listKnowledgeDocuments();
+  return Promise.all(documents.map((document) => inspectExistingKnowledgeDocument(document)));
 }
 
 export async function listKnowledgeSources(): Promise<KnowledgeDocumentSummary[]> {
@@ -373,9 +409,37 @@ export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<
   await ensureKnowledgeDir();
 
   const title = (input.title || "Imported Knowledge").trim();
-  const fileName = `${slugifyFileName(input.fileName || title)}.md`;
-  const filePath = path.join(knowledgeDirPath, fileName);
   const content = input.content.trim();
+  if (!content) {
+    throw new Error("knowledge content must not be empty");
+  }
+
+  const requestedFileName = `${slugifyFileName(input.fileName || title)}.md`;
+  const normalizedIncomingContent = normalizeComparableContent(content);
+  const existingDocuments = await readExistingKnowledgeDocuments();
+
+  const exactDuplicate = existingDocuments.find(
+    (document) => document.normalizedContent === normalizedIncomingContent
+  );
+  if (exactDuplicate) {
+    const knowledgeIndex = await loadKnowledgeIndex();
+    return {
+      action: "duplicate",
+      fileName: exactDuplicate.fileName,
+      filePath: exactDuplicate.filePath,
+      title: exactDuplicate.title,
+      document: buildDocumentSummary(exactDuplicate, exactDuplicate.content.length),
+      index: knowledgeIndex.index
+    };
+  }
+
+  const matchedByFileName = existingDocuments.find((document) => document.fileName === requestedFileName);
+  const matchedByTitle = existingDocuments.find(
+    (document) => document.title.trim().toLowerCase() === title.trim().toLowerCase()
+  );
+  const targetDocument = matchedByFileName || matchedByTitle;
+  const fileName = targetDocument?.fileName || requestedFileName;
+  const filePath = targetDocument?.filePath || path.join(knowledgeDirPath, fileName);
 
   const documentBody = [`# ${title}`, "", content, ""].join("\n");
   await fs.writeFile(filePath, documentBody, "utf8");
@@ -393,6 +457,7 @@ export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<
   const knowledgeIndex = await loadKnowledgeIndex();
 
   return {
+    action: targetDocument ? "updated" : "created",
     fileName,
     filePath,
     title,
