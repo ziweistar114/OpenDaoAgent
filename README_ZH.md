@@ -26,10 +26,10 @@
 如果你第一次打开这个项目，建议按这个顺序看：
 
 1. [prototype/README.md](./prototype/README.md)
-2. [第一阶段 MVP](./docs/FIRST_MVP.md)
-3. [架构草图](./docs/ARCHITECTURE.md)
+2. [第一阶段 MVP](./docs/FIRST_MVP_ZH.md)
+3. [架构草图](./docs/ARCHITECTURE_ZH.md)
 4. [路线图](./ROADMAP.md)
-5. [项目宣言](./MANIFESTO.md)
+5. [项目宣言](./MANIFESTO_ZH.md)
 
 ## 本地快速体验
 
@@ -121,10 +121,10 @@ http://localhost:3010/
 
 ## 继续深入
 
-- [项目宣言](./MANIFESTO.md)
+- [项目宣言](./MANIFESTO_ZH.md)
 - [路线图](./ROADMAP.md)
-- [第一阶段 MVP](./docs/FIRST_MVP.md)
-- [架构草图](./docs/ARCHITECTURE.md)
+- [第一阶段 MVP](./docs/FIRST_MVP_ZH.md)
+- [架构草图](./docs/ARCHITECTURE_ZH.md)
 - [贡献说明](./CONTRIBUTING.md)
 - [社区协作说明](./docs/COMMUNITY_GUIDE.md)
 - [首批 issue 建议](./docs/FIRST_ISSUES.md)
@@ -137,6 +137,7 @@ OpenDaoAgent/
 ├─ README.md
 ├─ README_EN.md
 ├─ MANIFESTO.md
+├─ MANIFESTO_ZH.md
 ├─ ROADMAP.md
 ├─ CONTRIBUTING.md
 ├─ .github/
@@ -149,9 +150,11 @@ OpenDaoAgent/
 │  └─ src/
 └─ docs/
    ├─ ARCHITECTURE.md
+   ├─ ARCHITECTURE_ZH.md
    ├─ COMMUNITY_GUIDE.md
    ├─ FIRST_ISSUES.md
    ├─ FIRST_MVP.md
+   ├─ FIRST_MVP_ZH.md
    ├─ GITHUB_LAUNCH_POST.md
    └─ LICENSE_DECISION.md
 ```

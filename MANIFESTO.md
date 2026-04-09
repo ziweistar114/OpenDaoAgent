@@ -1,103 +1,104 @@
-# OpenDaoAgent 宣言
+# OpenDaoAgent Manifesto
 
-我们相信，今天的大多数 AI 系统仍然是“短时工具”。
+We believe that most AI systems today are still short-term tools.
 
-它们会回答、会执行、会配合，但在一次会话结束后，往往也就“结束”了。  
-它们可以帮你完成任务，却很难真正形成长期存在、长期记忆、长期服务的关系。
+They can answer, execute, and cooperate, but the moment a session ends, the relationship usually ends with it. They can help complete tasks, but they rarely form a long-term pattern of presence, memory, and service.
 
-我们想尝试另一条路。
+We want to explore a different path.
 
-## 我们想做什么
+Chinese entry: [MANIFESTO_ZH.md](./MANIFESTO_ZH.md)
 
-我们想发起一个开放智能体底座项目。
+## What We Want To Build
 
-这个项目关注的不是“让 AI 多像人”，而是让智能体系统具备 4 个更基础也更长期的能力：
+We want to start an open agent foundation project.
 
-- 长期记忆
-- 长期存在
-- 跨端连续
-- 持续服务
+The goal is not to make AI look more human. The goal is to give agent systems four more durable capabilities:
 
-它不以“更会说话”为核心目标，而以“更能长期为人服务”为核心目标。
+- long-term memory
+- long-term presence
+- cross-device continuity
+- ongoing service
 
-## 我们不想做什么
+The project is not centered on sounding more conversational. It is centered on becoming more capable of serving people over time.
 
-我们不想把这个项目做成：
+## What We Do Not Want To Build
 
-- 一个新的神话叙事
-- 一个技术宗教
-- 一个无限制自动执行机器
-- 一个包装成“数字生命”的营销项目
-- 一个绕开法律与伦理边界的野蛮实验
+We do not want to turn this project into:
 
-我们也不打算用夸大的 AGI 语言掩盖当前能力边界。
+- a new myth narrative
+- a technical religion
+- an unrestricted autonomous execution machine
+- a marketing story disguised as digital life
+- a reckless experiment that tries to bypass legal and ethical boundaries
 
-## 我们的立场
+We also do not want to use exaggerated AGI language to hide current capability limits.
 
-我们承认：
+## Our Position
 
-- 真正长期存在的智能体系统很难
-- 价值对齐不是一句提示词能解决的
-- 自主学习一定伴随风险
-- 分布式存续不是“永生”，只是更强的可恢复能力
-- 任何服务人类的系统，都必须以合规、透明、可审计为前提
+We openly acknowledge that:
 
-因此，我们选择从小开始。
+- truly durable agent systems are hard
+- value alignment is not solved by a single prompt
+- autonomous learning always carries risk
+- distributed persistence is not immortality, only stronger recoverability
+- any system meant to serve people must begin with compliance, transparency, and auditability
 
-## 我们的第一性原则
+That is why we choose to start small.
 
-### 1. 人类利益优先
+## First Principles
 
-系统能力的设计，不以“更强自主性”为第一目标，而以“是否真正有利于人”为第一目标。
+### 1. Human Benefit Comes First
 
-### 2. 合规与边界优先
+System capabilities should not be designed around maximum autonomy. They should be designed around whether they genuinely help people.
 
-这个项目不会把安全、法律、伦理当成附属条款，而会把它们视为设计前提。
+### 2. Compliance And Boundaries Come First
 
-### 3. 长期记忆优先于花哨交互
+This project does not treat safety, legal constraints, and ethics as side notes. They are design prerequisites.
 
-一个真正值得长期投入的智能体，首先应当记得住、接得上、延续得下去。
+### 3. Durable Memory Matters More Than Fancy Interaction
 
-### 4. 可审计优先于黑箱自治
+An agent worth building for the long term should first be able to remember, reconnect, and continue.
 
-我们不追求“看起来像神秘生命体”的不可解释感，而追求“行为可追踪、边界可验证、变更可回滚”。
+### 4. Auditability Matters More Than Opaque Autonomy
 
-### 5. 开放协作优先于单点垄断
+We do not want the mystery of a black-box pseudo-lifeform. We want behavior that can be traced, boundaries that can be validated, and changes that can be rolled back.
 
-如果这个方向值得存在，它就不应当被单一公司、单一平台、单一个人完全锁死。
+### 5. Open Collaboration Matters More Than Single-Point Control
 
-## 我们的起点
+If this direction deserves to exist, it should not be completely locked inside one company, one platform, or one person.
 
-我们不从终极形态开始。
+## Our Starting Point
 
-我们从一个最小可行原型开始：
+We are not starting from the final form.
 
-- 本地优先
-- 可持续记忆
-- 授权知识接入
-- 工具调用有边界
-- 多设备连续性可设计
-- 代码和架构可以被别人接手和继续推进
+We are starting from a minimal viable prototype with:
 
-如果这个起点成立，未来更强的形态才有资格被讨论。  
-如果这个起点不成立，那么所有更大的叙事都只是空话。
+- local-first deployment
+- durable memory
+- authorized knowledge ingestion
+- bounded tool use
+- designed paths for multi-device continuity
+- code and architecture that other people can continue building
 
-## 我们欢迎什么样的人
+If this starting point holds, stronger future forms become worth discussing.
+If it does not hold, larger narratives are just empty language.
 
-我们欢迎愿意一起把事情做扎实的人：
+## The Kind Of People We Welcome
 
-- 愿意写代码的人
-- 愿意做架构的人
-- 愿意补文档的人
-- 愿意提出反例和约束的人
-- 愿意抵抗空想膨胀的人
+We welcome people who want to make the work more real:
 
-我们尤其欢迎既有愿景感、又尊重现实边界的人。
+- people willing to write code
+- people willing to shape architecture
+- people willing to improve documentation
+- people willing to raise counterexamples and constraints
+- people willing to resist visionary inflation
 
-## 结尾
+We especially welcome people who can hold both ambition and reality at the same time.
 
-我们不是在宣布一个神明降临。  
-我们是在尝试搭一个开放智能体的长期底座。
+## Closing
 
-它也许很小，但应该是真的。  
-它也许很慢，但应该能继续长。
+We are not announcing the arrival of a digital god.
+We are trying to build the long-term foundation of an open agent system.
+
+It may be small, but it should be real.
+It may move slowly, but it should keep growing.

@@ -1,198 +1,200 @@
-# 架构草图
+# Architecture Sketch
 
-## 当前定位
+## Current Positioning
 
-`OpenDaoAgent` 第一阶段不是做“全功能智能生命”，而是做一个能被继续搭建的开放底座。
+Phase 1 of `OpenDaoAgent` is not trying to build a complete digital lifeform. It is trying to build an open foundation that other people can continue extending.
 
-因此，架构设计必须优先满足：
+That means the architecture must optimize for four things first:
 
-- 能落地
-- 能替换
-- 能扩展
-- 能审计
+- it can be implemented
+- it can be replaced
+- it can be extended
+- it can be audited
 
-## V1 核心层级
+Chinese entry: [ARCHITECTURE_ZH.md](./ARCHITECTURE_ZH.md)
 
-建议 V1 先按 6 层理解：
+## V1 Core Layers
+
+A useful way to think about V1 is as six layers:
 
 ```text
-交互层
+interaction layer
   ↓
-编排层
+orchestration layer
   ↓
-记忆层
+memory layer
   ↓
-知识层
+knowledge layer
   ↓
-工具层
+tool layer
   ↓
-部署与审计层
+deployment and audit layer
 ```
 
 ---
 
-## 1. 交互层
+## 1. Interaction Layer
 
-### 作用
+### Role
 
-负责接收用户输入、呈现结果、维护多端入口。
+Receives user input, renders output, and exposes the system through multiple interfaces.
 
-### 第一阶段建议
+### Phase 1 Recommendation
 
-- Web 界面
-- 本地桌面入口或轻量网页入口
-- API 调用入口
+- web interface
+- local desktop entry or lightweight browser entry
+- API entrypoint
 
-### 暂不优先
+### Not A Priority Yet
 
-- 复杂语音助手
-- 多模态摄像头接入
-- 大规模第三方平台集成
+- complex voice assistant behavior
+- multimodal camera integration
+- large-scale third-party platform integration
 
 ---
 
-## 2. 编排层
+## 2. Orchestration Layer
 
-### 作用
+### Role
 
-决定一次请求如何被拆解、是否调用记忆、是否检索知识、是否调用工具。
+Determines how a request should be decomposed, whether memory should be used, whether knowledge should be retrieved, and whether a tool should be called.
 
-### 第一阶段建议
+### Phase 1 Recommendation
 
-- 保持轻量
-- 明确工具调用边界
-- 支持最小工作流
+- keep it lightweight
+- keep tool boundaries explicit
+- support a minimal workflow
 
-### 可以借鉴
+### Useful References
 
 - LangGraph
-- Flowise / Dify 的工作流思路
+- workflow ideas from Flowise or Dify
 
-### 不建议
+### What To Avoid
 
-- 上来做极重的自治代理
-- 默认允许无限制自动执行
-
----
-
-## 3. 记忆层
-
-### 作用
-
-让系统在一次次会话之外保持连续性。
-
-### 第一阶段至少区分两类记忆
-
-#### 短期记忆
-
-- 当前会话上下文
-- 任务进行状态
-
-#### 长期记忆
-
-- 用户偏好
-- 关键身份信息
-- 重要长期项目
-- 可继承的摘要与索引
-
-### 关键原则
-
-- 不是所有内容都应该永久保存
-- 需要记忆筛选与更新机制
-- 必须支持删除、覆盖、回滚
+- jumping immediately into very heavy autonomous agents
+- allowing unrestricted automatic execution by default
 
 ---
 
-## 4. 知识层
+## 3. Memory Layer
 
-### 作用
+### Role
 
-支持系统读取公开知识和授权知识。
+Lets the system maintain continuity beyond a single conversation.
 
-### 第一阶段建议
+### At Minimum, Phase 1 Should Distinguish Two Types Of Memory
 
-- 本地文档导入
-- 向量索引
-- 基础检索增强
-- 明确知识来源
+#### Short-Term Memory
 
-### 不要写成
+- current session context
+- task progress state
 
-- “学习全网所有知识”
+#### Durable Memory
 
-### 更准确的说法
+- user preferences
+- key identity information
+- important long-term projects
+- reusable summaries and indexes
 
-- 接入公开合规知识
-- 接入用户授权知识
-- 形成可检索、可引用、可更新的知识系统
+### Key Principles
 
----
-
-## 5. 工具层
-
-### 作用
-
-让智能体能从“会说”变成“会做”。
-
-### 第一阶段建议能力
-
-- 文件读取
-- 文件写入（有限范围）
-- 基础命令执行
-- 指定应用或脚本调用
-
-### 核心原则
-
-- 默认最小权限
-- 高风险动作要确认
-- 行为必须可记录
+- not everything should be stored forever
+- memory needs selection and update rules
+- deletion, override, and rollback must exist
 
 ---
 
-## 6. 部署与审计层
+## 4. Knowledge Layer
 
-### 作用
+### Role
 
-保证系统可以被启动、维护、恢复和检查。
+Allows the system to read both public knowledge and authorized knowledge.
 
-### 第一阶段建议
+### Phase 1 Recommendation
 
-- Docker 本地部署
-- 配置文件化
-- 日志可追踪
-- 记忆与知识可备份
-- 支持恢复
+- local document ingestion
+- indexing
+- basic retrieval enhancement
+- explicit source references
 
-### 长期扩展方向
+### What Not To Write
 
-- 云端同步
-- 多设备连续性
-- 节点化部署
+- "learn the entire internet"
 
----
+### More Accurate Framing
 
-## V1 暂不纳入
-
-以下内容可以保留为远期探索，但不要进第一阶段：
-
-- 区块链治理
-- DAO 治理机制
-- 全网边缘节点永久存续
-- 全参数持续训练
-- 无限制自动学习
-- 面向全人类的公共基础设施治理
-
-这些都属于远期议题，不属于当前原型底座。
+- ingest compliant public knowledge
+- ingest user-authorized knowledge
+- build a knowledge system that is retrievable, citable, and updateable
 
 ---
 
-## 当前最重要的架构判断
+## 5. Tool Layer
 
-V1 的成败，不取决于“是否够宏大”，而取决于这 4 个判断是否成立：
+### Role
 
-1. 长期记忆是否真的能工作
-2. 本地优先是否真的能落地
-3. 工具调用是否真的可控
-4. 代码结构是否真的能让外部人加入继续做
+Allows the agent to move from only talking to actually doing bounded work.
 
-如果这 4 条站不住，其他所有叙事都不成立。
+### Phase 1 Recommendation
+
+- file reading
+- file writing within limited scope
+- basic command execution
+- calling specific apps or scripts
+
+### Core Principles
+
+- minimum permission by default
+- high-risk actions require confirmation
+- behavior must be recordable
+
+---
+
+## 6. Deployment And Audit Layer
+
+### Role
+
+Keeps the system startable, maintainable, recoverable, and inspectable.
+
+### Phase 1 Recommendation
+
+- Docker-based local deployment
+- configuration in files
+- traceable logs
+- memory and knowledge backups
+- recovery support
+
+### Longer-Term Extensions
+
+- cloud sync
+- cross-device continuity
+- node-based deployment
+
+---
+
+## Not Included In V1
+
+The following can remain future explorations, but should not be pulled into Phase 1:
+
+- blockchain governance
+- DAO governance mechanisms
+- full-network edge-node permanent persistence
+- continuous full-parameter training
+- unrestricted autonomous learning
+- governance of humanity-scale public infrastructure
+
+These are long-range topics, not current prototype foundation work.
+
+---
+
+## The Most Important Architectural Question Right Now
+
+The success of V1 does not depend on how grand it sounds. It depends on whether these four judgments hold:
+
+1. does durable memory actually work?
+2. can local-first deployment actually be made real?
+3. can tool use actually stay controlled?
+4. is the code structure clear enough for outside contributors to continue building?
+
+If these four points do not hold, the larger narrative does not hold either.

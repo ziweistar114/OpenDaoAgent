@@ -148,7 +148,7 @@ curl -X POST http://localhost:3010/api/query \
 ## 当前状态
 
 - 这是最小演进骨架，不代表功能已经完整
-- 真正的 MVP 仍然以 `docs/FIRST_MVP.md` 为准
+- 真正的 MVP 仍然以 `docs/FIRST_MVP_ZH.md` 为准
 - 当前 memory 已支持本地 JSON 持久化读取
 - 当前 knowledge 已支持本地 markdown / text 文档读取
 - 当前 knowledge 已支持最小 chunk 切分与 chunk 级 source 引用

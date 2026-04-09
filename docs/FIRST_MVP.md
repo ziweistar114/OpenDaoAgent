@@ -1,162 +1,162 @@
-# 第一阶段 MVP
+# Phase 1 MVP
 
-## 一句话目标
+## One-Line Goal
 
-先做出一个“本地优先、可长期记忆、可接入授权知识、具备基础工具能力”的开放智能体原型。
+Build an open agent prototype that is local-first, capable of durable memory, able to ingest authorized knowledge, and able to use a small set of bounded tools.
 
-## 为什么是这个 MVP
+Chinese entry: [FIRST_MVP_ZH.md](./FIRST_MVP_ZH.md)
 
-如果第一版连以下事情都做不到：
+## Why This MVP Exists
 
-- 记得住
-- 接得上
-- 跑得起来
-- 可被别人继续开发
+If the first version cannot do the following, then it is too early to talk about larger ambitions:
 
-那就没有资格继续谈更大的愿景。
+- remember important things
+- reconnect with prior context
+- run in a real environment
+- remain understandable enough for other contributors to continue building
 
-所以第一阶段必须非常克制。
+That is why Phase 1 must stay deliberately narrow.
 
-## 第一阶段必须有的能力
+## Capabilities Phase 1 Must Include
 
-### 1. 本地部署
+### 1. Local Deployment
 
-要求：
+Requirements:
 
-- 能在一台普通开发机器上启动
-- 部署方式尽量简单
-- 最好使用 Docker
+- it should start on a normal development machine
+- deployment should stay as simple as possible
+- Docker is strongly preferred
 
-验收：
+Acceptance:
 
-- 新加入的人能按说明跑起来
+- a new contributor can get it running by following the docs
 
-### 2. 长期记忆
+### 2. Durable Memory
 
-要求：
+Requirements:
 
-- 至少有一层长期记忆
-- 能保存用户重要信息
-- 能在会话结束后继续保留
+- at least one durable memory layer
+- it can retain important user information
+- it persists beyond a single session
 
-验收：
+Acceptance:
 
-- 关闭后重开仍然保留关键记忆
+- key memories still exist after stopping and restarting the system
 
-### 3. 授权知识接入
+### 3. Authorized Knowledge Ingestion
 
-要求：
+Requirements:
 
-- 能导入本地文档
-- 能进行基础检索
-- 能引用知识而不是纯凭模型猜
+- local documents can be imported
+- basic retrieval works
+- the system can cite knowledge instead of only guessing
 
-验收：
+Acceptance:
 
-- 对同一问题，能结合导入知识给出回答
+- for the same question, the system can answer with support from imported knowledge
 
-### 4. 基础编排
+### 4. Basic Orchestration
 
-要求：
+Requirements:
 
-- 能根据请求决定是否查记忆、查知识、调用工具
-- 不要求复杂自治
+- the system can decide whether to use memory, knowledge, or tools
+- complex autonomy is not required
 
-验收：
+Acceptance:
 
-- 至少有一条清晰的工作流跑通
+- at least one clear workflow runs end to end
 
-### 5. 有边界的工具调用
+### 5. Bounded Tool Use
 
-要求：
+Requirements:
 
-- 能做少量基础操作
-- 不能默认开放全部权限
-- 高风险动作要可控
+- the system can perform a small set of useful operations
+- full permission is never the default
+- higher-risk actions remain controllable
 
-验收：
+Acceptance:
 
-- 能展示受限工具调用能力
+- the system can demonstrate constrained tool use in a clear way
 
-### 6. 审计与恢复
+### 6. Auditability And Recovery
 
-要求：
+Requirements:
 
-- 有日志
-- 有配置
-- 有备份思路
+- logging exists
+- configuration exists
+- backup and recovery thinking exists
 
-验收：
+Acceptance:
 
-- 基础问题可追踪
-- 核心数据可以恢复
+- basic problems can be traced
+- core data can be restored
 
-## 第一阶段不要做的事
+## What Must Not Enter Phase 1
 
-以下事项不要混进 MVP：
+The following should not be mixed into the MVP:
 
-- 全网分布式永久存续
-- 全自动学习互联网全部知识
-- 全球治理机制
-- 区块链化
-- 代币系统
-- 复杂多智能体生态
-- “数字生命”级叙事实现
+- globally distributed permanent persistence
+- automatic learning of the entire internet
+- global governance mechanisms
+- blockchainization
+- token systems
+- complex multi-agent ecosystems
+- digital-life-level narrative implementation
 
-这些会直接把第一阶段拖死。
+These directions would overload and likely break Phase 1.
 
-## 推荐拆分模块
+## Recommended Module Breakdown
 
-### 模块 A：本地运行壳子
+### Module A: Local Runtime Shell
 
-- 配置
-- 启动
+- configuration
+- startup
 - Docker
-- 基础 API
+- base API
 
-### 模块 B：记忆系统
+### Module B: Memory System
 
-- 短期记忆
-- 长期记忆
-- 更新策略
+- short-term memory
+- durable memory
+- update strategy
 
-### 模块 C：知识系统
+### Module C: Knowledge System
 
-- 文档导入
-- 索引
-- 检索
+- document ingestion
+- indexing
+- retrieval
 
-### 模块 D：编排系统
+### Module D: Orchestration System
 
-- 意图判断
-- 路由
-- 工具调用控制
+- intent judgment
+- routing
+- tool invocation control
 
-### 模块 E：审计系统
+### Module E: Audit System
 
-- 日志
-- 错误记录
-- 行为记录
+- logging
+- error recording
+- behavior recording
 
-## 第一批 issue 建议
+## Suggested First Issues
 
-- 选型本地部署方式
-- 设计长期记忆结构
-- 设计知识导入流程
-- 设计最小工作流
-- 设计工具权限模型
-- 设计日志与审计基础
-- 做出第一版前端壳子
+- choose the initial local deployment path
+- design the durable memory structure
+- design the knowledge ingestion flow
+- design the minimum workflow
+- design the tool permission model
+- design the logging and audit basics
+- build the first frontend shell
 
-## 第一阶段完成的标志
+## What Counts As Phase 1 Success
 
-当下不以“多强”为标准，而以“能不能继续做”为标准。
+The standard is not how powerful the system looks. The standard is whether the project becomes real enough to continue.
 
-如果出现以下结果，第一阶段就算成功：
+Phase 1 is successful if:
 
-- 新人能跑起来
-- 用户能看到长期记忆效果
-- 授权知识接入有效
-- 工具调用是受控的
-- 代码结构足够清楚
-- 有人愿意继续加入一起做
+- newcomers can run it
+- users can observe durable memory effects
+- authorized knowledge ingestion works
+- tool use remains controlled
+- the code structure is clear enough to continue from
+- serious collaborators want to keep building with it
