@@ -4,6 +4,7 @@ import path from "node:path";
 import { getConfig } from "./core/config.js";
 import { prototypeRoot } from "./core/paths.js";
 import { ingestLocalDocument, listKnowledgeSources } from "./knowledge/store.js";
+import { listMemorySnapshot } from "./memory/store.js";
 import { runOrchestrator } from "./orchestrator/run.js";
 import { logStep } from "./shared/logger.js";
 import { listAllowedTools } from "./tools/catalog.js";
@@ -125,6 +126,7 @@ const server = http.createServer(async (request, response) => {
         homeZh: "GET /zh",
         health: "GET /health",
         query: "POST /api/query",
+        memoryState: "GET /api/memory/state",
         knowledgeSources: "GET /api/knowledge/sources",
         knowledgeImport: "POST /api/knowledge/import"
       },
@@ -141,6 +143,12 @@ const server = http.createServer(async (request, response) => {
       phase: config.currentPhase,
       timestamp: new Date().toISOString()
     });
+    return;
+  }
+
+  if (method === "GET" && url.pathname === "/api/memory/state") {
+    const snapshot = await listMemorySnapshot();
+    writeJson(response, 200, snapshot);
     return;
   }
 

@@ -148,6 +148,12 @@ Health check:
 curl http://localhost:3010/health
 ```
 
+Memory governance snapshot:
+
+```bash
+curl http://localhost:3010/api/memory/state
+```
+
 Query endpoint:
 
 ```bash
@@ -181,6 +187,7 @@ The import response now includes:
 - This is a minimal evolution skeleton, not a complete product
 - The real MVP target is still defined by `docs/FIRST_MVP.md`
 - Memory already supports local JSON persistence, dedup, merge, and retention rules
+- Memory now also exposes a governance snapshot with counts, categories, priority mix, source mix, and retention limit
 - Knowledge already supports local markdown and text ingestion, chunking, source references, and minimal index caching
 - Knowledge now also exposes a source-list endpoint and richer import metadata for pipeline inspection
 - The prototype already includes a first Chinese knowledge corpus covering Phase 1 focus, retrieval design, and memory principles

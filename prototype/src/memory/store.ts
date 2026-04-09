@@ -4,11 +4,15 @@ import { memoryFilePath } from "../core/paths.js";
 import type {
   AgentQuery,
   MemoryCategory,
+  MemoryGovernanceStats,
   MemoryItem,
   MemoryPriority,
+  MemorySnapshot,
   MemoryWriteResult,
   RetrievedMemory
 } from "../shared/types.js";
+
+const memoryRetentionLimit = 50;
 
 const memorySeed: MemoryItem[] = [
   {
@@ -256,6 +260,41 @@ async function writeMemoryItems(items: MemoryItem[]): Promise<void> {
   await fs.writeFile(memoryFilePath, JSON.stringify(items, null, 2), "utf8");
 }
 
+function buildMemoryGovernanceStats(items: MemoryItem[]): MemoryGovernanceStats {
+  const sortedByUpdated = [...items].sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
+
+  return {
+    retentionLimit: memoryRetentionLimit,
+    totalCount: items.length,
+    activeCount: items.filter((item) => item.state === "active").length,
+    mergedCount: items.filter((item) => item.state === "merged").length,
+    highPriorityCount: items.filter((item) => item.priority === "high").length,
+    categories: {
+      goal: items.filter((item) => item.category === "goal").length,
+      preference: items.filter((item) => item.category === "preference").length,
+      constraint: items.filter((item) => item.category === "constraint").length,
+      fact: items.filter((item) => item.category === "fact").length,
+      question: items.filter((item) => item.category === "question").length
+    },
+    sources: {
+      seed: items.filter((item) => item.source === "seed").length,
+      local: items.filter((item) => item.source === "local").length
+    },
+    newestUpdatedAt: sortedByUpdated[0]?.updatedAt,
+    oldestUpdatedAt: sortedByUpdated.at(-1)?.updatedAt
+  };
+}
+
+export async function listMemorySnapshot(): Promise<MemorySnapshot> {
+  const items = await readMemoryItems();
+  return {
+    items,
+    stats: buildMemoryGovernanceStats(items)
+  };
+}
+
 function sortForRetention(items: MemoryItem[]): MemoryItem[] {
   return items.sort((a, b) => {
     const byPriority = priorityWeight(b.priority) - priorityWeight(a.priority);
@@ -298,7 +337,9 @@ export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResul
       summary: buildCompressedSummary(duplicate.text, duplicate.aliases),
       updatedAt: new Date().toISOString()
     };
-    await writeMemoryItems(sortForRetention([refreshed, ...items.filter((item) => item.id !== duplicate.id)]).slice(0, 50));
+    await writeMemoryItems(
+      sortForRetention([refreshed, ...items.filter((item) => item.id !== duplicate.id)]).slice(0, memoryRetentionLimit)
+    );
     return { saved: false, reason: "duplicate memory already exists; updated timestamp", item: refreshed };
   }
 
@@ -310,7 +351,9 @@ export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResul
 
   if (similar) {
     const merged = mergeMemory(similar, text, tags);
-    await writeMemoryItems(sortForRetention([merged, ...items.filter((item) => item.id !== similar.id)]).slice(0, 50));
+    await writeMemoryItems(
+      sortForRetention([merged, ...items.filter((item) => item.id !== similar.id)]).slice(0, memoryRetentionLimit)
+    );
     return { saved: false, reason: "merged into similar memory", item: merged };
   }
 
@@ -321,7 +364,7 @@ export async function rememberQuery(query: AgentQuery): Promise<MemoryWriteResul
     source: "local"
   });
 
-  await writeMemoryItems(sortForRetention([item, ...items]).slice(0, 50));
+  await writeMemoryItems(sortForRetention([item, ...items]).slice(0, memoryRetentionLimit));
   return { saved: true, reason: "saved as local memory", item };
 }
 

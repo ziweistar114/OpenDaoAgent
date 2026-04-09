@@ -22,6 +22,23 @@ export type MemoryItem = {
   source: "seed" | "local";
 };
 
+export type MemoryGovernanceStats = {
+  retentionLimit: number;
+  totalCount: number;
+  activeCount: number;
+  mergedCount: number;
+  highPriorityCount: number;
+  categories: Record<MemoryCategory, number>;
+  sources: Record<MemoryItem["source"], number>;
+  newestUpdatedAt?: string;
+  oldestUpdatedAt?: string;
+};
+
+export type MemorySnapshot = {
+  items: MemoryItem[];
+  stats: MemoryGovernanceStats;
+};
+
 export type KnowledgeItem = {
   id: string;
   title: string;
