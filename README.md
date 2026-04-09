@@ -75,6 +75,35 @@
 - [架构草图](./docs/ARCHITECTURE.md)
 - [贡献说明](./CONTRIBUTING.md)
 
+## 当前可演示内容
+
+仓库现在已经不只是文档起步版，`prototype/` 里有一条真实可跑的最小演示链路：
+
+- 浏览器页面：可直接在本地网页里提问
+- HTTP API：`GET /health`、`POST /api/query`
+- 本地 memory：会保存有意义的 query，并参与后续检索
+- 本地 knowledge：从 markdown / text 文档切 chunk 检索
+- 统一响应格式：包含 `summary / evidence / nextActions / route / memory / knowledge / system`
+- source 引用与原始 JSON：方便验证回答是否有依据
+
+快速体验：
+
+```bash
+cd prototype
+npm install
+npm run dev
+```
+
+然后打开：
+
+```text
+http://localhost:3010/
+```
+
+原型说明见：
+
+- [prototype/README.md](./prototype/README.md)
+
 ## 当前仓库建议结构
 
 ```text
@@ -152,7 +181,7 @@ OpenDaoAgent/
 
 ## 当前状态
 
-当前状态：发起阶段 / 文档起步版
+当前状态：发起阶段 / 文档 + 最小可运行原型
 
 下一步最重要的事不是继续讲大愿景，而是：
 

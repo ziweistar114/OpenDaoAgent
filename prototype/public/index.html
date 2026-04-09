@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenDaoAgent Prototype</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #08101f;
+        --bg-soft: #0f1830;
+        --panel: rgba(18, 27, 49, 0.88);
+        --panel-border: rgba(116, 151, 234, 0.18);
+        --text: #ebf1ff;
+        --muted: #9cb0d6;
+        --accent: #7aa2ff;
+        --accent-strong: #5b88ff;
+        --accent-soft: rgba(122, 162, 255, 0.14);
+        --success: #65d7a3;
+        --error: #ff8a8a;
+        --warning: #f4ca72;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top, rgba(57, 97, 203, 0.35) 0%, rgba(8, 16, 31, 0) 36%),
+          linear-gradient(180deg, #0b1328 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 36px 0 56px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .hero-card,
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 22px;
+        padding: 22px;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+        backdrop-filter: blur(8px);
+      }
+
+      .eyebrow {
+        color: var(--accent);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(32px, 4vw, 48px);
+        line-height: 1.05;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 760px;
+      }
+
+      .chip-row,
+      .prompt-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .hero-chips {
+        margin-top: 18px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        color: var(--text);
+        background: var(--accent-soft);
+        border: 1px solid rgba(122, 162, 255, 0.16);
+      }
+
+      .hero-side-title {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      .hero-side-copy {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .metric {
+        border-radius: 16px;
+        padding: 14px;
+        background: rgba(8, 16, 31, 0.45);
+        border: 1px solid rgba(156, 176, 214, 0.12);
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 22px;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.25fr);
+        gap: 20px;
+      }
+
+      .card h2 {
+        margin: 0 0 14px;
+        font-size: 18px;
+      }
+
+      .section + .section {
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(156, 176, 214, 0.12);
+      }
+
+      .kicker {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 180px;
+        resize: vertical;
+        border-radius: 16px;
+        border: 1px solid rgba(116, 151, 234, 0.22);
+        background: var(--bg-soft);
+        color: var(--text);
+        padding: 14px;
+        font: inherit;
+        line-height: 1.6;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 14px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        background: var(--accent-strong);
+        color: #ffffff;
+        padding: 11px 18px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        opacity: 0.65;
+        cursor: wait;
+        transform: none;
+      }
+
+      .ghost {
+        background: transparent;
+        border: 1px solid rgba(116, 151, 234, 0.22);
+        color: var(--muted);
+      }
+
+      .prompt-chip {
+        border-radius: 14px;
+        padding: 10px 12px;
+        background: rgba(91, 136, 255, 0.08);
+        border: 1px solid rgba(116, 151, 234, 0.14);
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      .status,
+      .hint,
+      .small-copy {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .status[data-tone="success"] {
+        color: var(--success);
+      }
+
+      .status[data-tone="error"] {
+        color: var(--error);
+      }
+
+      .status[data-tone="warning"] {
+        color: var(--warning);
+      }
+
+      .summary-panel {
+        padding: 18px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(90, 140, 255, 0.16), rgba(15, 24, 48, 0.72));
+        border: 1px solid rgba(116, 151, 234, 0.14);
+      }
+
+      .summary {
+        font-size: 17px;
+        line-height: 1.75;
+      }
+
+      .grid-two {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .sub-card {
+        border-radius: 16px;
+        padding: 16px;
+        background: rgba(8, 16, 31, 0.38);
+        border: 1px solid rgba(156, 176, 214, 0.12);
+      }
+
+      .sub-card h3 {
+        margin: 0 0 10px;
+        font-size: 14px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      li + li {
+        margin-top: 8px;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .meta-box {
+        border-radius: 16px;
+        padding: 14px;
+        background: rgba(8, 16, 31, 0.45);
+        border: 1px solid rgba(156, 176, 214, 0.12);
+      }
+
+      .meta-box strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+
+      .meta-box span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      details {
+        border-radius: 16px;
+        background: rgba(8, 16, 31, 0.35);
+        border: 1px solid rgba(156, 176, 214, 0.12);
+        overflow: hidden;
+      }
+
+      summary {
+        cursor: pointer;
+        padding: 14px 16px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      pre {
+        margin: 0;
+        padding: 0 16px 16px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      code {
+        font-family: Consolas, Monaco, monospace;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .layout,
+        .grid-two,
+        .meta-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="hero-card">
+          <div class="eyebrow">OpenDaoAgent Demo</div>
+          <h1>A Local-First Agent You Can Actually Try</h1>
+          <p class="subtitle">
+            This prototype combines durable memory, source-backed knowledge retrieval, and a
+            unified response envelope into a single browser demo. Ask a question, inspect the
+            evidence, and see exactly how the system routes the request.
+          </p>
+          <div class="chip-row hero-chips">
+            <div class="chip">Local-first memory</div>
+            <div class="chip">Knowledge chunks + cache</div>
+            <div class="chip">Unified API response</div>
+            <div class="chip">Browser demo on top of real API</div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h2 class="hero-side-title">Why this demo matters</h2>
+          <p class="hero-side-copy">
+            The goal is not to pretend this is a finished product. The goal is to prove that a
+            long-term agent stack can already be made inspectable, grounded, and runnable in a
+            minimal open prototype.
+          </p>
+          <div class="metrics">
+            <div class="metric">
+              <strong id="metric-route">4</strong>
+              <span>route modes already wired: memory-first, knowledge-first, hybrid, fallback</span>
+            </div>
+            <div class="metric">
+              <strong id="metric-index">cache</strong>
+              <span>knowledge index now reuses local chunks instead of rescanning every query</span>
+            </div>
+            <div class="metric">
+              <strong id="metric-response">v1</strong>
+              <span>response schema now stable enough to feed API clients and browser pages</span>
+            </div>
+            <div class="metric">
+              <strong id="metric-endpoint">/api/query</strong>
+              <span>same backend powers both the JSON API and this demo page</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout">
+        <div class="card">
+          <h2>Ask The Agent</h2>
+          <div class="section">
+            <label for="query-input">Prompt</label>
+            <textarea id="query-input">What should Phase 1 focus on for local-first memory and source-backed knowledge?</textarea>
+            <div class="actions">
+              <button id="submit-button" type="button">Run Query</button>
+              <button id="fill-button" class="ghost" type="button">Use Example</button>
+              <span id="status" class="status">Ready</span>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="kicker">Try these prompts</div>
+            <div class="prompt-row">
+              <button class="prompt-chip" type="button" data-prompt="What should Phase 1 focus on for local-first memory and source-backed knowledge?">
+                Phase 1 focus
+              </button>
+              <button class="prompt-chip" type="button" data-prompt="How should retrieval work before a vector database is added?">
+                Retrieval design
+              </button>
+              <button class="prompt-chip" type="button" data-prompt="Remember my preference for local-first deployment and tell me what matters most next.">
+                Memory + continuity
+              </button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="kicker">What this page is doing</div>
+            <p class="small-copy">
+              The browser submits to <code>/api/query</code> on the same origin, then renders the
+              real orchestrator response instead of mock data.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>System Response</h2>
+
+          <div class="section">
+            <div class="kicker">Answer Summary</div>
+            <div class="summary-panel">
+              <div id="summary" class="summary">Run a query to see the orchestrator summary.</div>
+            </div>
+          </div>
+
+          <div class="section grid-two">
+            <div class="sub-card">
+              <h3>Evidence</h3>
+              <ul id="evidence-list">
+                <li>No evidence yet.</li>
+              </ul>
+            </div>
+            <div class="sub-card">
+              <h3>Next Actions</h3>
+              <ul id="next-actions-list">
+                <li>No next actions yet.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="kicker">Runtime Snapshot</div>
+            <div class="meta-grid">
+              <div class="meta-box">
+                <strong>Route</strong>
+                <span id="route-text">Pending</span>
+              </div>
+              <div class="meta-box">
+                <strong>Knowledge Index</strong>
+                <span id="knowledge-index-text">Pending</span>
+              </div>
+              <div class="meta-box">
+                <strong>Memory Write</strong>
+                <span id="memory-write-text">Pending</span>
+              </div>
+              <div class="meta-box">
+                <strong>Generated</strong>
+                <span id="generated-text">Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="kicker">Raw JSON</div>
+            <details>
+              <summary>Inspect the full API response</summary>
+              <pre id="raw-json">No response yet.</pre>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const queryInput = document.getElementById("query-input");
+      const submitButton = document.getElementById("submit-button");
+      const fillButton = document.getElementById("fill-button");
+      const statusNode = document.getElementById("status");
+      const summaryNode = document.getElementById("summary");
+      const evidenceList = document.getElementById("evidence-list");
+      const nextActionsList = document.getElementById("next-actions-list");
+      const routeText = document.getElementById("route-text");
+      const knowledgeIndexText = document.getElementById("knowledge-index-text");
+      const memoryWriteText = document.getElementById("memory-write-text");
+      const generatedText = document.getElementById("generated-text");
+      const rawJson = document.getElementById("raw-json");
+      const promptButtons = document.querySelectorAll("[data-prompt]");
+
+      function setStatus(text, tone) {
+        statusNode.textContent = text;
+        statusNode.dataset.tone = tone || "";
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function renderList(target, items, emptyText) {
+        if (!items || !items.length) {
+          target.innerHTML = "<li>" + escapeHtml(emptyText) + "</li>";
+          return;
+        }
+
+        target.innerHTML = items
+          .map((item) => "<li>" + escapeHtml(item) + "</li>")
+          .join("");
+      }
+
+      function renderResponse(data) {
+        summaryNode.textContent = data.answer?.summary || "No summary returned.";
+        renderList(evidenceList, data.answer?.evidence || [], "No evidence returned.");
+        renderList(nextActionsList, data.answer?.nextActions || [], "No next actions returned.");
+
+        const routeReason = data.route?.reason ? " | " + data.route.reason : "";
+        routeText.textContent = (data.route?.mode || "unknown") + routeReason;
+
+        const index = data.knowledge?.index || {};
+        knowledgeIndexText.textContent =
+          (index.cacheState || "unknown") +
+          " | docs=" +
+          (index.documentCount ?? 0) +
+          " | chunks=" +
+          (index.chunkCount ?? 0);
+
+        memoryWriteText.textContent = data.memory?.write?.reason || "No memory write info.";
+        generatedText.textContent = data.system?.generatedAt || "Unknown";
+        rawJson.textContent = JSON.stringify(data, null, 2);
+      }
+
+      async function runQuery() {
+        const text = queryInput.value.trim();
+        if (!text) {
+          setStatus("Please enter a question first.", "error");
+          return;
+        }
+
+        submitButton.disabled = true;
+        setStatus("Running query...", "warning");
+
+        try {
+          const response = await fetch("/api/query", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Request failed");
+          }
+
+          renderResponse(data);
+          setStatus("Query completed.", "success");
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Unknown error";
+          setStatus(message, "error");
+        } finally {
+          submitButton.disabled = false;
+        }
+      }
+
+      submitButton.addEventListener("click", runQuery);
+      fillButton.addEventListener("click", () => {
+        queryInput.value =
+          "What should Phase 1 focus on for local-first memory and source-backed knowledge?";
+        setStatus("Example prompt inserted.", "");
+      });
+
+      promptButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          queryInput.value = button.dataset.prompt || "";
+          setStatus("Example prompt inserted.", "");
+        });
+      });
+    </script>
+  </body>
+</html>

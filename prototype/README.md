@@ -74,12 +74,22 @@ prototype/
 
 1. 进入 `prototype/`
 2. 安装依赖：`npm install`
-3. 启动示例链路：`npm run dev`
-4. 先看 `src/index.ts`
+3. 启动最小 HTTP API：`npm run dev`
+4. 如果只想看控制台示例链路：`npm run dev:console`
 5. 再看：
    - `src/memory/store.ts`
    - `src/knowledge/store.ts`
    - `src/orchestrator/run.ts`
+   - `src/server.ts`
+6. 浏览器打开：`http://localhost:3010/`
+
+## Demo Highlights
+
+- 浏览器里直接提问，不需要先写 `curl`
+- 页面会渲染统一响应里的 `summary / evidence / nextActions / route / knowledge / memory`
+- 检索命中会保留 source 引用，方便判断答案是不是有依据
+- knowledge 已经走最小索引缓存，文档没变化时不会每次重建
+- 这个页面不是假数据面板，而是直接连本地 `POST /api/query`
 
 ### 导入一份本地知识
 
@@ -95,6 +105,36 @@ npm run ingest:file -- --file ./data/knowledge/phase1-focus.md
 npm run ingest:file -- --title "Temporary Note" --text "Local-first memory should stay easy to inspect."
 ```
 
+### 调用最小 HTTP API
+
+启动后默认监听 `http://localhost:3010`。
+
+浏览器页面：
+
+```text
+http://localhost:3010/
+```
+
+演示时建议优先展示这 3 个画面：
+
+1. 首页 Hero + 输入区
+2. 一次 query 返回后的 Summary / Evidence / Runtime Snapshot
+3. 展开 Raw JSON，证明这不是静态假页面
+
+健康检查：
+
+```bash
+curl http://localhost:3010/health
+```
+
+查询接口：
+
+```bash
+curl -X POST http://localhost:3010/api/query \
+  -H "Content-Type: application/json" \
+  -d "{\"text\":\"What should Phase 1 focus on for local-first memory?\"}"
+```
+
 ## 当前状态
 
 - 这是最小演进骨架，不代表功能已经完整
@@ -108,6 +148,9 @@ npm run ingest:file -- --title "Temporary Note" --text "Local-first memory shoul
 - 当前 memory 会自动补齐结构化字段：`summary / category / priority / createdAt / updatedAt`
 - 当前 orchestrator 已支持最小路由判断：`memory-first / knowledge-first / hybrid / fallback`
 - 当前 orchestrator 已输出统一响应格式：`version / query / answer / route / memory / knowledge / system`
+- 当前 prototype 已暴露最小 HTTP API：`GET /health` 与 `POST /api/query`
+- 当前 prototype 已提供最小浏览器页面，可直接提交 query 并渲染统一响应
+- 当前 prototype 已具备对外演示基础：浏览器页、API、统一响应、source 引用、可检查原始 JSON
 - 当前 memory 已支持最小治理规则：
   - 重复内容只更新时间与访问次数
   - 相似内容会合并进旧记忆
