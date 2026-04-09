@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OpenDaoAgent Prototype Demo</title>
+    <title>OpenDaoAgent 原型演示</title>
     <style>
       :root {
         color-scheme: dark;
@@ -371,49 +371,47 @@
   <body>
     <main class="page">
       <div class="topbar">
-        <a class="lang-link" href="/zh">Chinese Demo</a>
+        <a class="lang-link" href="/">English Demo</a>
       </div>
 
       <section class="hero">
         <div class="hero-card">
-          <div class="eyebrow">OpenDaoAgent Demo</div>
-          <h1>A Local-First Agent Prototype You Can Try Right Now</h1>
+          <div class="eyebrow">OpenDaoAgent 演示页</div>
+          <h1>一个现在就能试的本地优先智能体原型</h1>
           <p class="subtitle">
-            This prototype combines durable memory, source-backed knowledge retrieval, and a unified
-            response envelope into a browser demo you can inspect. Ask a question, review the
-            evidence, and see how the system routes the request.
+            这个原型把长期记忆、带来源引用的知识检索、统一响应结构，收进了一个可直接打开的浏览器演示页。
+            你可以直接提问、查看证据、观察路由方式，并判断这条路线到底值不值得继续往前做。
           </p>
           <div class="chip-row hero-chips">
-            <div class="chip">Local-first memory</div>
-            <div class="chip">Knowledge chunks + cache</div>
-            <div class="chip">Unified API response</div>
-            <div class="chip">Browser demo on top of the real API</div>
+            <div class="chip">本地优先记忆</div>
+            <div class="chip">知识切块 + 索引缓存</div>
+            <div class="chip">统一 API 响应</div>
+            <div class="chip">浏览器直连真实接口</div>
           </div>
         </div>
 
         <div class="hero-card">
-          <h2 class="hero-side-title">Why this demo matters</h2>
+          <h2 class="hero-side-title">这个演示说明了什么</h2>
           <p class="hero-side-copy">
-            The point is not to pretend this is a finished product. The point is to prove that a
-            long-term agent stack can already be made runnable, inspectable, and grounded in a small
-            open prototype.
+            这不是一个“已经完成”的产品，而是一个足够真实的起点。它证明了长期智能体底座至少已经可以做到：
+            能跑、能看、能追踪来源、能继续迭代，而不是停留在概念描述。
           </p>
           <div class="metrics">
             <div class="metric">
               <strong id="metric-route">4</strong>
-              <span>route modes already wired: memory-first, knowledge-first, hybrid, fallback</span>
+              <span>已经接通 4 种路由模式：memory-first、knowledge-first、hybrid、fallback</span>
             </div>
             <div class="metric">
               <strong id="metric-index">cache</strong>
-              <span>knowledge reuses a local index instead of rescanning all files each request</span>
+              <span>知识索引可复用本地 chunk，不再每次请求都全量重扫</span>
             </div>
             <div class="metric">
               <strong id="metric-response">v1</strong>
-              <span>the response schema is already stable enough for API clients and demo pages</span>
+              <span>响应结构已经稳定到可以同时给 API 和浏览器页面使用</span>
             </div>
             <div class="metric">
               <strong id="metric-endpoint">/api/query</strong>
-              <span>the same backend powers both the JSON API and this browser walkthrough</span>
+              <span>同一套后端同时驱动 JSON 接口和这个演示页面</span>
             </div>
           </div>
         </div>
@@ -421,93 +419,93 @@
 
       <section class="layout">
         <div class="card">
-          <h2>Ask The Agent</h2>
+          <h2>向智能体提问</h2>
           <div class="section">
-            <label for="query-input">Prompt</label>
-            <textarea id="query-input">What should Phase 1 focus on if the project must stay local-first, memory-driven, and source-backed?</textarea>
+            <label for="query-input">问题输入</label>
+            <textarea id="query-input">第一阶段如果要坚持本地优先、长期记忆和可追踪来源，最应该先做什么？</textarea>
             <div class="actions">
-              <button id="submit-button" type="button">Run Query</button>
-              <button id="fill-button" class="ghost" type="button">Use Example</button>
-              <span id="status" class="status">Ready</span>
+              <button id="submit-button" type="button">开始查询</button>
+              <button id="fill-button" class="ghost" type="button">填入示例</button>
+              <span id="status" class="status">准备就绪</span>
             </div>
           </div>
 
           <div class="section">
-            <div class="kicker">Suggested Prompts</div>
+            <div class="kicker">可以直接试的问题</div>
             <div class="prompt-row">
-              <button class="prompt-chip" type="button" data-prompt="What should Phase 1 focus on if the project must stay local-first, memory-driven, and source-backed?">
-                Phase 1 focus
+              <button class="prompt-chip" type="button" data-prompt="第一阶段如果要坚持本地优先、长期记忆和可追踪来源，最应该先做什么？">
+                第一阶段重点
               </button>
-              <button class="prompt-chip" type="button" data-prompt="How should retrieval work before a vector database is added?">
-                Retrieval design
+              <button class="prompt-chip" type="button" data-prompt="在还没有接入向量数据库之前，检索层应该怎么做才合理？">
+                检索设计
               </button>
-              <button class="prompt-chip" type="button" data-prompt="Remember my preference for local-first deployment and tell me what matters most next.">
-                Memory continuity
+              <button class="prompt-chip" type="button" data-prompt="记住我偏向本地部署这个前提，并告诉我下一步最重要的事情是什么。">
+                记忆与连续性
               </button>
             </div>
           </div>
 
           <div class="section">
-            <div class="kicker">What this page does</div>
+            <div class="kicker">这个页面在做什么</div>
             <p class="small-copy">
-              The browser sends the prompt to <code>/api/query</code> on the same origin and renders
-              the real orchestrator response instead of mock data.
+              浏览器会直接请求同源的 <code>/api/query</code>，再把真实 orchestrator 返回结果渲染出来，
+              不是假数据，也不是静态演示稿。
             </p>
           </div>
         </div>
 
         <div class="card">
-          <h2>System Response</h2>
+          <h2>系统响应</h2>
 
           <div class="section">
-            <div class="kicker">Answer Summary</div>
+            <div class="kicker">回答摘要</div>
             <div class="summary-panel">
-              <div id="summary" class="summary">Run a query to see the orchestrator summary.</div>
+              <div id="summary" class="summary">发起一次查询后，这里会展示系统给出的核心结论。</div>
             </div>
           </div>
 
           <div class="section grid-two">
             <div class="sub-card">
-              <h3>Evidence</h3>
+              <h3>证据与依据</h3>
               <ul id="evidence-list">
-                <li>No evidence yet.</li>
+                <li>还没有证据内容。</li>
               </ul>
             </div>
             <div class="sub-card">
-              <h3>Next Actions</h3>
+              <h3>下一步建议</h3>
               <ul id="next-actions-list">
-                <li>No next actions yet.</li>
+                <li>还没有下一步建议。</li>
               </ul>
             </div>
           </div>
 
           <div class="section">
-            <div class="kicker">Runtime Snapshot</div>
+            <div class="kicker">运行快照</div>
             <div class="meta-grid">
               <div class="meta-box">
-                <strong>Route</strong>
-                <span id="route-text">Pending</span>
+                <strong>路由模式</strong>
+                <span id="route-text">等待查询</span>
               </div>
               <div class="meta-box">
-                <strong>Knowledge Index</strong>
-                <span id="knowledge-index-text">Pending</span>
+                <strong>知识索引</strong>
+                <span id="knowledge-index-text">等待查询</span>
               </div>
               <div class="meta-box">
-                <strong>Memory Write</strong>
-                <span id="memory-write-text">Pending</span>
+                <strong>记忆写入</strong>
+                <span id="memory-write-text">等待查询</span>
               </div>
               <div class="meta-box">
-                <strong>Generated</strong>
-                <span id="generated-text">Pending</span>
+                <strong>生成时间</strong>
+                <span id="generated-text">等待查询</span>
               </div>
             </div>
           </div>
 
           <div class="section">
-            <div class="kicker">Raw JSON</div>
+            <div class="kicker">原始 JSON</div>
             <details>
-              <summary>Inspect the full API response</summary>
-              <pre id="raw-json">No response yet.</pre>
+              <summary>展开查看完整接口响应</summary>
+              <pre id="raw-json">还没有响应数据。</pre>
             </details>
           </div>
         </div>
@@ -555,9 +553,9 @@
       }
 
       function renderResponse(data) {
-        summaryNode.textContent = data.answer?.summary || "No summary returned.";
-        renderList(evidenceList, data.answer?.evidence || [], "No evidence returned.");
-        renderList(nextActionsList, data.answer?.nextActions || [], "No next actions returned.");
+        summaryNode.textContent = data.answer?.summary || "系统没有返回摘要。";
+        renderList(evidenceList, data.answer?.evidence || [], "系统没有返回证据。");
+        renderList(nextActionsList, data.answer?.nextActions || [], "系统没有返回下一步建议。");
 
         const routeReason = data.route?.reason ? " | " + data.route.reason : "";
         routeText.textContent = (data.route?.mode || "unknown") + routeReason;
@@ -570,20 +568,20 @@
           " | chunks=" +
           (index.chunkCount ?? 0);
 
-        memoryWriteText.textContent = data.memory?.write?.reason || "No memory write info.";
-        generatedText.textContent = data.system?.generatedAt || "Unknown";
+        memoryWriteText.textContent = data.memory?.write?.reason || "没有记忆写入信息。";
+        generatedText.textContent = data.system?.generatedAt || "未知";
         rawJson.textContent = JSON.stringify(data, null, 2);
       }
 
       async function runQuery() {
         const text = queryInput.value.trim();
         if (!text) {
-          setStatus("Please enter a question first.", "error");
+          setStatus("请先输入一个问题。", "error");
           return;
         }
 
         submitButton.disabled = true;
-        setStatus("Running query...", "warning");
+        setStatus("正在查询...", "warning");
 
         try {
           const response = await fetch("/api/query", {
@@ -594,13 +592,13 @@
 
           const data = await response.json();
           if (!response.ok) {
-            throw new Error(data.error || "Request failed");
+            throw new Error(data.error || "请求失败");
           }
 
           renderResponse(data);
-          setStatus("Query completed.", "success");
+          setStatus("查询完成。", "success");
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Unknown error";
+          const message = error instanceof Error ? error.message : "未知错误";
           setStatus(message, "error");
         } finally {
           submitButton.disabled = false;
@@ -610,14 +608,14 @@
       submitButton.addEventListener("click", runQuery);
       fillButton.addEventListener("click", () => {
         queryInput.value =
-          "What should Phase 1 focus on if the project must stay local-first, memory-driven, and source-backed?";
-        setStatus("Example prompt inserted.", "");
+          "第一阶段如果要坚持本地优先、长期记忆和可追踪来源，最应该先做什么？";
+        setStatus("已填入示例问题。", "");
       });
 
       promptButtons.forEach((button) => {
         button.addEventListener("click", () => {
           queryInput.value = button.dataset.prompt || "";
-          setStatus("Example prompt inserted.", "");
+          setStatus("已填入示例问题。", "");
         });
       });
     </script>

@@ -1,35 +1,38 @@
 # OpenDaoAgent
 
-一个面向长期记忆、长期存在、跨端连续性的开放智能体底座。
+An open agent foundation for long-term memory, long-term presence, and cross-device continuity.
 
-## 一句话说明
+## One-Line Summary
 
-`OpenDaoAgent` 想做的，不是一次性回答问题的聊天工具，而是一个可以长期存在、长期记忆、长期服务的开放智能体底座。
+`OpenDaoAgent` is not meant to be just another single-session chatbot. The project explores a more durable direction: an open agent foundation that can remember over time, stay inspectable, and evolve into a long-lived service system.
 
-它当前不是终极形态，也不是空想叙事；它首先要成为一个真正能跑、能被别人看懂、能持续迭代的开源起点。
+This repository is still early. It does not claim AGI, digital life, or production maturity. Its current goal is more practical: build a real, runnable starting point that other engineers can inspect and extend.
 
-## 现在已经有什么
+Chinese entry: [README_ZH.md](./README_ZH.md)
 
-仓库现在已经不只是文档草稿，`prototype/` 里已经有一条真实可跑的最小演示链路：
+## What Already Exists
 
-- 浏览器演示页：可直接在本地网页提问
-- HTTP API：`GET /health`、`POST /api/query`
-- 本地记忆层：会保存有意义的 query，并参与后续检索
-- 本地知识层：从 markdown / text 文档切块检索
-- 统一响应结构：`summary / evidence / nextActions / route / memory / knowledge / system`
-- source 引用与原始 JSON：可以检查回答到底有没有依据
+The repository now contains more than documentation. The `prototype/` directory already includes a runnable minimal chain with:
 
-## 先看什么
+- A browser demo page
+- A local HTTP API: `GET /health`, `POST /api/query`
+- Local memory persistence for meaningful queries
+- Local knowledge retrieval from markdown and text files
+- A unified response format: `summary / evidence / nextActions / route / memory / knowledge / system`
+- Source references and raw JSON inspection
+- Early Chinese query support on top of the same local-first stack
 
-如果你第一次打开这个项目，建议按这个顺序看：
+## Start Here
+
+If you are new to the project, read in this order:
 
 1. [prototype/README.md](./prototype/README.md)
-2. [第一阶段 MVP](./docs/FIRST_MVP.md)
-3. [架构草图](./docs/ARCHITECTURE.md)
-4. [路线图](./ROADMAP.md)
-5. [项目宣言](./MANIFESTO.md)
+2. [FIRST_MVP.md](./docs/FIRST_MVP.md)
+3. [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+4. [ROADMAP.md](./ROADMAP.md)
+5. [MANIFESTO.md](./MANIFESTO.md)
 
-## 本地快速体验
+## Quick Start
 
 ```bash
 cd prototype
@@ -37,153 +40,150 @@ npm install
 npm run dev
 ```
 
-然后打开：
+Then open:
 
 ```text
 http://localhost:3010/
 ```
 
-## 这个项目想解决什么
+Chinese demo page:
 
-今天大多数 AI 系统仍然停留在“会话型工具”层面：
+```text
+http://localhost:3010/zh
+```
 
-- 会回答，但不会真正留下来
-- 会执行，但不会持续成长
-- 会配合，但不会长期记住你和你的环境
+## What Problem This Project Tries To Solve
 
-`OpenDaoAgent` 想尝试另一条路线：
+Most AI systems today are still session tools:
 
-- 让智能体具备长期记忆
-- 让智能体具备跨设备连续性
-- 让智能体在授权边界内持续学习
-- 让智能体成为长期服务系统，而不是一次性响应系统
+- They answer, but they do not really stay
+- They execute, but they do not truly grow with continuity
+- They cooperate, but they do not reliably remember the user and environment over time
 
-## 第一阶段目标
+`OpenDaoAgent` explores a different path:
 
-第一阶段不追求“全人类通用数字生命”的终极形态，只验证最核心的底座能力能不能站住：
+- Long-term memory
+- Cross-device continuity
+- Authorized knowledge ingestion
+- Auditable behavior
+- Local-first deployment before larger infrastructure
 
-- 本地优先部署
-- 长期记忆
-- 授权知识接入
-- 安全边界
-- 可审计行为
-- 跨设备连续性设计
+## Phase 1 Scope
 
-当前重点验证 6 件事：
+Phase 1 is intentionally narrow. It is not trying to simulate a complete autonomous digital being. It is only trying to validate whether a durable agent foundation can be assembled from a small set of practical capabilities:
 
-1. 本地部署是否足够稳定
-2. 长期记忆层如何设计
-3. 授权知识如何持续接入
-4. 工具调用如何保持安全和可审计
-5. 多设备连续性怎么落地
-6. 这个方向是否值得吸引更多技术同路人加入
+- Local-first deployment
+- Long-term memory
+- Authorized knowledge ingestion
+- Safe and auditable tool boundaries
+- Cross-device continuity design
 
-## 这个项目不是什么
+The current phase focuses on six questions:
 
-这个项目当前不是：
+1. Can the local deployment path remain stable and understandable?
+2. How should durable memory be stored, merged, and governed?
+3. How should authorized knowledge be ingested and retrieved?
+4. How should tool use remain constrained and inspectable?
+5. How should cross-device continuity be represented?
+6. Is this direction concrete enough to attract serious technical collaborators?
 
-- 一个宗教项目
-- 一个玄学包装的空想工程
-- 一个无限制自动化代理
-- 一个监控用户的系统
-- 一个已经成熟可商用的 AGI 平台
-- 一个替代人类判断的终极决策机器
+## What This Project Is Not
 
-## 我们希望谁加入
+At this stage, the project is not:
 
-当前更适合加入的，是愿意一起把基础打牢的人：
+- A religion or belief system
+- A mystical rebranding of vague ideas
+- An unrestricted autonomous agent
+- A user surveillance system
+- A production-ready AGI platform
+- A replacement for human judgment
 
-- Agent / LLM 应用工程师
-- 记忆系统 / RAG / 知识库方向工程师
-- 后端 / 本地部署 / Docker / Linux 方向工程师
-- 前端原型 / 产品交互设计师
-- 开源协作与社区维护者
+## Who We Hope Will Join
 
-如果你对以下问题有兴趣，也欢迎参与：
+The best early collaborators are people willing to help build the foundation carefully:
 
-- 长期记忆如何设计
-- 智能体如何跨设备连续存在
-- 本地优先与云端同步怎么平衡
-- 行为可审计与权限最小化如何实现
-- 如何避免项目从“长期主义”滑向“空想主义”
+- Agent and LLM application engineers
+- Memory, RAG, and retrieval engineers
+- Backend, local deployment, Docker, and Linux engineers
+- Frontend prototypers and product interaction designers
+- Open-source community builders and maintainers
 
-## 发起原则
+Useful interest areas include:
 
-这个项目当前坚持 5 条原则：
+- Durable memory design
+- Cross-device continuity
+- Local-first versus cloud sync boundaries
+- Auditable behavior and minimal permissions
+- Keeping the project practical instead of drifting into vague futurism
 
-1. 先做出来，再往远处谈
-2. 先做最小原型，不先做终极神话
-3. 先吸引技术同路人，再谈更大叙事
-4. 先验证长期记忆与连续性，再谈全局智能
-5. 所有能力必须在合规、可控、可审计边界内推进
+## Working Principles
 
-## 继续深入
+The current effort follows five basic rules:
 
-- [项目宣言](./MANIFESTO.md)
-- [路线图](./ROADMAP.md)
-- [第一阶段 MVP](./docs/FIRST_MVP.md)
-- [架构草图](./docs/ARCHITECTURE.md)
-- [贡献说明](./CONTRIBUTING.md)
-- [社区协作说明](./docs/COMMUNITY_GUIDE.md)
-- [首批 issue 建议](./docs/FIRST_ISSUES.md)
-- [GitHub 首发招募文案](./docs/GITHUB_LAUNCH_POST.md)
+1. Build something real before talking about distant end states
+2. Start with a minimal prototype before claiming a grand vision
+3. Attract technical collaborators before expanding the narrative
+4. Validate memory and continuity before broader intelligence claims
+5. Keep all capabilities within controllable, inspectable, and safe boundaries
 
-## 当前仓库建议结构
+## Repository Layout
 
 ```text
 OpenDaoAgent/
-├─ README.md
-├─ README_EN.md
-├─ MANIFESTO.md
-├─ ROADMAP.md
-├─ CONTRIBUTING.md
-├─ .github/
-│  ├─ ISSUE_TEMPLATE/
-│  └─ PULL_REQUEST_TEMPLATE.md
-├─ prototype/
-│  ├─ README.md
-│  ├─ package.json
-│  ├─ tsconfig.json
-│  └─ src/
-└─ docs/
-   ├─ ARCHITECTURE.md
-   ├─ COMMUNITY_GUIDE.md
-   ├─ FIRST_ISSUES.md
-   ├─ FIRST_MVP.md
-   ├─ GITHUB_LAUNCH_POST.md
-   └─ LICENSE_DECISION.md
+|- README.md
+|- README_ZH.md
+|- README_EN.md
+|- MANIFESTO.md
+|- ROADMAP.md
+|- CONTRIBUTING.md
+|- LICENSE
+|- docs/
+|  |- FIRST_MVP.md
+|  |- ARCHITECTURE.md
+|  |- COMMUNITY_GUIDE.md
+|  |- FIRST_ISSUES.md
+|  '- GITHUB_LAUNCH_POST.md
+'- prototype/
+   |- README.md
+   |- README_ZH.md
+   |- public/
+   |  |- index.html
+   |  '- index.zh.html
+   |- src/
+   |- data/
+   '- package.json
 ```
 
-## 发布前建议
+## Recommended Pre-Launch Checks
 
-如果你准备把本仓库公开到 GitHub，建议在首发前确认：
+Before wider release, it is worth confirming:
 
-- 项目名是否最终确定
-- 许可证是否已选择
-- 是否已经放入最小可运行原型
-- 是否准备好了首批 issue 列表
-- 是否准备好了第一版招募文案
+- The README is clear enough for a first-time visitor
+- Phase 1 boundaries are explicit
+- The license is settled
+- A runnable minimal prototype is present
+- The first issues are ready for contributors
 
-招募文案草稿见：
+## Read More
 
-- [GitHub 首发招募文案](./docs/GITHUB_LAUNCH_POST.md)
-- [许可证选择建议](./docs/LICENSE_DECISION.md)
-- [社区协作说明](./docs/COMMUNITY_GUIDE.md)
-- [首批 issue 建议](./docs/FIRST_ISSUES.md)
+- [MANIFESTO.md](./MANIFESTO.md)
+- [ROADMAP.md](./ROADMAP.md)
+- [FIRST_MVP.md](./docs/FIRST_MVP.md)
+- [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [COMMUNITY_GUIDE.md](./docs/COMMUNITY_GUIDE.md)
+- [FIRST_ISSUES.md](./docs/FIRST_ISSUES.md)
+- [GITHUB_LAUNCH_POST.md](./docs/GITHUB_LAUNCH_POST.md)
 
-最小原型骨架见：
+Prototype details:
 
 - [prototype/README.md](./prototype/README.md)
+- [prototype/README_ZH.md](./prototype/README_ZH.md)
 
-## 当前状态
+## Current Status
 
-当前状态：发起阶段 / 文档 + 最小可运行原型。
+Current status: initiation stage, with documentation plus a minimal runnable prototype.
 
-下一步最重要的事，不是继续放大愿景，而是继续把基础做扎实：
+The next important step is not to inflate the vision. It is to deepen the prototype, sharpen module boundaries, create executable issues, and attract the first serious builders.
 
-- 把原型继续做深，而不只是做表面演示
-- 明确模块边界和演进顺序
-- 建立第一批可执行 issue
-- 吸引第一批真正愿意动手的技术同路人
-
-如果你愿意一起把这件事从“概念”推进成“基础设施雏形”，欢迎加入。
+If you want to help move this from an idea into an early infrastructure shape, you are welcome to join.

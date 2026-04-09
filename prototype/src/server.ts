@@ -11,6 +11,7 @@ const config = getConfig();
 const port = Number(process.env.PORT || 3010);
 const maxBodySize = 64 * 1024;
 const appHtmlPath = path.join(prototypeRoot, "public", "index.html");
+const appHtmlZhPath = path.join(prototypeRoot, "public", "index.zh.html");
 
 function setJsonHeaders(response: http.ServerResponse): void {
   response.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -88,6 +89,20 @@ const server = http.createServer(async (request, response) => {
     }
   }
 
+  if (method === "GET" && (url.pathname === "/zh" || url.pathname === "/zh/")) {
+    try {
+      const html = await fs.readFile(appHtmlZhPath, "utf8");
+      writeHtml(response, 200, html);
+      return;
+    } catch {
+      writeJson(response, 500, {
+        ok: false,
+        error: "failed to load the local Chinese app page"
+      });
+      return;
+    }
+  }
+
   if (method === "GET" && url.pathname === "/app-info") {
     writeJson(response, 200, {
       appName: config.appName,
@@ -95,6 +110,7 @@ const server = http.createServer(async (request, response) => {
       phase: config.currentPhase,
       endpoints: {
         home: "GET /",
+        homeZh: "GET /zh",
         health: "GET /health",
         query: "POST /api/query"
       },
