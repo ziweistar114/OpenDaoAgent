@@ -31,6 +31,19 @@ export type KnowledgeItem = {
   chunkIndex: number;
 };
 
+export type KnowledgeLanguage = "zh" | "en" | "mixed" | "unknown";
+
+export type KnowledgeDocumentSummary = {
+  title: string;
+  fileName: string;
+  sourcePath: string;
+  chunkCount: number;
+  characterCount: number;
+  tags: string[];
+  language: KnowledgeLanguage;
+  updatedAt: string;
+};
+
 export type KnowledgeIndexCacheState = "reused" | "rebuilt" | "seed" | "skipped";
 
 export type KnowledgeIndexStatus = {
@@ -53,6 +66,14 @@ export type RetrievedKnowledge = {
 
 export type KnowledgeRetrievalResult = {
   hits: RetrievedKnowledge[];
+  index: KnowledgeIndexStatus;
+};
+
+export type KnowledgeImportResult = {
+  fileName: string;
+  filePath: string;
+  title: string;
+  document: KnowledgeDocumentSummary;
   index: KnowledgeIndexStatus;
 };
 

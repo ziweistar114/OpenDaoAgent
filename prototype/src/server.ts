@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { getConfig } from "./core/config.js";
 import { prototypeRoot } from "./core/paths.js";
+import { ingestLocalDocument, listKnowledgeSources } from "./knowledge/store.js";
 import { runOrchestrator } from "./orchestrator/run.js";
 import { logStep } from "./shared/logger.js";
 import { listAllowedTools } from "./tools/catalog.js";
@@ -64,6 +65,17 @@ function isQueryPayload(value: unknown): value is { text: string } {
   );
 }
 
+function isKnowledgeImportPayload(
+  value: unknown
+): value is { title?: string; content: string; fileName?: string } {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      "content" in value &&
+      typeof (value as { content?: unknown }).content === "string"
+  );
+}
+
 const server = http.createServer(async (request, response) => {
   const method = request.method || "GET";
   const url = new URL(request.url || "/", `http://${request.headers.host || `localhost:${port}`}`);
@@ -112,7 +124,9 @@ const server = http.createServer(async (request, response) => {
         home: "GET /",
         homeZh: "GET /zh",
         health: "GET /health",
-        query: "POST /api/query"
+        query: "POST /api/query",
+        knowledgeSources: "GET /api/knowledge/sources",
+        knowledgeImport: "POST /api/knowledge/import"
       },
       allowedTools: listAllowedTools()
     });
@@ -126,6 +140,14 @@ const server = http.createServer(async (request, response) => {
       mode: config.mode,
       phase: config.currentPhase,
       timestamp: new Date().toISOString()
+    });
+    return;
+  }
+
+  if (method === "GET" && url.pathname === "/api/knowledge/sources") {
+    const sources = await listKnowledgeSources();
+    writeJson(response, 200, {
+      sources
     });
     return;
   }
@@ -145,6 +167,39 @@ const server = http.createServer(async (request, response) => {
       logStep("api", `received query over HTTP: ${body.text}`);
       const result = await runOrchestrator({ text: body.text.trim() });
       writeJson(response, 200, result);
+      return;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "unknown error";
+      writeJson(response, 400, {
+        ok: false,
+        error: message
+      });
+      return;
+    }
+  }
+
+  if (method === "POST" && url.pathname === "/api/knowledge/import") {
+    try {
+      const body = await readJsonBody(request);
+
+      if (!isKnowledgeImportPayload(body) || !body.content.trim()) {
+        writeJson(response, 400, {
+          ok: false,
+          error: "request body must be JSON with a non-empty content field"
+        });
+        return;
+      }
+
+      const result = await ingestLocalDocument({
+        title: body.title?.trim(),
+        fileName: body.fileName?.trim(),
+        content: body.content.trim()
+      });
+
+      writeJson(response, 200, {
+        ok: true,
+        result
+      });
       return;
     } catch (error) {
       const message = error instanceof Error ? error.message : "unknown error";

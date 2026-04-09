@@ -63,3 +63,7 @@ console.log("Knowledge document imported.");
 console.log(`- title: ${result.title}`);
 console.log(`- file: ${result.fileName}`);
 console.log(`- path: ${result.filePath}`);
+console.log(`- language: ${result.document.language}`);
+console.log(`- chunks: ${result.document.chunkCount}`);
+console.log(`- tags: ${result.document.tags.join(", ")}`);
+console.log(`- index: ${result.index.cacheState} | docs=${result.index.documentCount} | chunks=${result.index.chunkCount}`);

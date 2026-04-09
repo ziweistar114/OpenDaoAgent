@@ -117,6 +117,13 @@ Import inline text directly:
 npm run ingest:file -- --title "Temporary Note" --text "Local-first memory should stay easy to inspect."
 ```
 
+The CLI now prints:
+
+- detected language
+- chunk count
+- extracted tags
+- refreshed index status
+
 ## Minimal HTTP API
 
 The API listens on `http://localhost:3010` by default.
@@ -142,12 +149,27 @@ curl -X POST http://localhost:3010/api/query \
   -d "{\"text\":\"What should Phase 1 focus on for local-first memory?\"}"
 ```
 
+Knowledge source list:
+
+```bash
+curl http://localhost:3010/api/knowledge/sources
+```
+
+Knowledge import endpoint:
+
+```bash
+curl -X POST http://localhost:3010/api/knowledge/import \
+  -H "Content-Type: application/json" \
+  -d "{\"title\":\"Fresh Note\",\"content\":\"Phase 1 should stay inspectable and local-first.\"}"
+```
+
 ## Current Status
 
 - This is a minimal evolution skeleton, not a complete product
 - The real MVP target is still defined by `docs/FIRST_MVP.md`
 - Memory already supports local JSON persistence, dedup, merge, and retention rules
 - Knowledge already supports local markdown and text ingestion, chunking, source references, and minimal index caching
+- Knowledge now also exposes a source-list endpoint and richer import metadata for pipeline inspection
 - The prototype already includes a first Chinese knowledge corpus covering Phase 1 focus, retrieval design, and memory principles
 - The orchestrator already supports basic route decisions: `memory-first / knowledge-first / hybrid / fallback`
 - The prototype already exposes `GET /health` and `POST /api/query`

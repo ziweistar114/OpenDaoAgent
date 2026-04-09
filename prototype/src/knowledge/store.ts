@@ -3,8 +3,11 @@ import path from "node:path";
 import { knowledgeDirPath, prototypeRoot } from "../core/paths.js";
 import type {
   AgentQuery,
+  KnowledgeDocumentSummary,
+  KnowledgeImportResult,
   KnowledgeIndexStatus,
   KnowledgeItem,
+  KnowledgeLanguage,
   KnowledgeRetrievalResult,
   RetrievedKnowledge
 } from "../shared/types.js";
@@ -44,6 +47,13 @@ type KnowledgeIndexCache = {
   items: KnowledgeItem[];
 };
 
+type IndexedKnowledgeDocument = KnowledgeCacheDocument & {
+  title: string;
+  language: KnowledgeLanguage;
+  tags: string[];
+  chunkCount: number;
+};
+
 function extractSearchTokens(text: string): string[] {
   const matches = text.toLowerCase().match(/[\u4e00-\u9fff]{2,}|[a-z0-9-]{2,}/g) || [];
   const semanticAliases: Array<[string, string[]]> = [
@@ -75,6 +85,21 @@ function extractSearchTokens(text: string): string[] {
   }
 
   return Array.from(new Set(expanded));
+}
+
+function detectKnowledgeLanguage(content: string): KnowledgeLanguage {
+  const zhMatches = content.match(/[\u4e00-\u9fff]/g) || [];
+  const enMatches = content.match(/[a-zA-Z]{2,}/g) || [];
+
+  if (!zhMatches.length && !enMatches.length) {
+    return "unknown";
+  }
+
+  if (zhMatches.length && enMatches.length) {
+    return "mixed";
+  }
+
+  return zhMatches.length ? "zh" : "en";
 }
 
 function scoreText(query: string, candidate: string, tags: string[]): number {
@@ -170,6 +195,7 @@ function slugifyFileName(input: string): string {
   const normalized = input
     .toLowerCase()
     .replace(/\.[^.]+$/, "")
+    .replace(/[\u4e00-\u9fff]+/g, "-")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
@@ -297,13 +323,53 @@ export type IngestKnowledgeInput = {
   fileName?: string;
 };
 
-export type IngestKnowledgeResult = {
-  fileName: string;
-  filePath: string;
-  title: string;
-};
+async function invalidateKnowledgeCache(): Promise<void> {
+  try {
+    await fs.unlink(knowledgeIndexCachePath);
+  } catch {
+    // Ignore missing cache file; the next read will rebuild it if needed.
+  }
+}
 
-export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<IngestKnowledgeResult> {
+function buildDocumentSummary(document: IndexedKnowledgeDocument, characterCount: number): KnowledgeDocumentSummary {
+  return {
+    title: document.title,
+    fileName: document.fileName,
+    sourcePath: document.sourcePath,
+    chunkCount: document.chunkCount,
+    characterCount,
+    tags: document.tags,
+    language: document.language,
+    updatedAt: new Date(document.mtimeMs).toISOString()
+  };
+}
+
+async function inspectKnowledgeDocument(document: KnowledgeCacheDocument): Promise<IndexedKnowledgeDocument> {
+  const filePath = path.join(knowledgeDirPath, document.fileName);
+  const content = await fs.readFile(filePath, "utf8");
+  const title = extractTitle(content, document.fileName);
+  const chunks = splitIntoChunks(content);
+
+  return {
+    ...document,
+    title,
+    language: detectKnowledgeLanguage(content),
+    tags: extractTags(document.fileName, `${title} ${content}`),
+    chunkCount: chunks.length
+  };
+}
+
+export async function listKnowledgeSources(): Promise<KnowledgeDocumentSummary[]> {
+  await ensureKnowledgeDir();
+  const documents = await listKnowledgeDocuments();
+  const inspected = await Promise.all(documents.map((document) => inspectKnowledgeDocument(document)));
+
+  return inspected.map((document) =>
+    buildDocumentSummary(document, document.size)
+  );
+}
+
+export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<KnowledgeImportResult> {
   await ensureKnowledgeDir();
 
   const title = (input.title || "Imported Knowledge").trim();
@@ -314,10 +380,24 @@ export async function ingestLocalDocument(input: IngestKnowledgeInput): Promise<
   const documentBody = [`# ${title}`, "", content, ""].join("\n");
   await fs.writeFile(filePath, documentBody, "utf8");
 
+  await invalidateKnowledgeCache();
+
+  const stats = await fs.stat(filePath);
+  const baseDocument: KnowledgeCacheDocument = {
+    fileName,
+    sourcePath: toProjectRelativePath(filePath),
+    mtimeMs: stats.mtimeMs,
+    size: stats.size
+  };
+  const inspected = await inspectKnowledgeDocument(baseDocument);
+  const knowledgeIndex = await loadKnowledgeIndex();
+
   return {
     fileName,
     filePath,
-    title
+    title,
+    document: buildDocumentSummary(inspected, content.length),
+    index: knowledgeIndex.index
   };
 }
 
